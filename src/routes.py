@@ -5,6 +5,9 @@ bp = Blueprint("pages", __name__)
 
 @bp.route("/")
 def home():
+    """Página inicial do dashboard.
+       Renderiza o HTML sem qualquer tipo de parâmetro.
+    """
     return render_template('home.html')
 
 @bp.route("/overview_vulnerabilities/", methods =["GET"])

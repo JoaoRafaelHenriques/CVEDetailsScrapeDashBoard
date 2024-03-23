@@ -1,9 +1,8 @@
 .tabelaResultados {
-    width: 90%;
+    width: 90rem;
     margin: auto;
     background-color: #232930;
     opacity : 0.5;
-    overflow: hidden;
 }
 
 .caixas {
@@ -26,20 +25,19 @@
     margin-right: auto;
     justify-content: space-between;
     color: #00adb5;
-    padding: 20px 20px 20px 20px;
+    padding: 1rem 1rem 1rem 1rem;
 }
 
 .headers {
-    font-size: 25px;
-    border-bottom: 100px solid rgb(0, 0, 0);
+    font-size: 2rem;
 }
 
 .head {
-    padding: 10px 60px;
+    padding: 1rem 4rem;
 }
 
 .lines {
-    font-size: 15px;
+    font-size:1rem;
     text-align: center;
     vertical-align: middle;
 }
@@ -48,3 +46,17 @@
     text-decoration: None;
     color: #00adb5;
 }
+
+.lines td {
+    max-width: 5rem; /* Defina a largura máxima que desejar */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* .lines td:hover {
+    max-width: none; /* Remove a largura máxima ao passar o mouse */
+    overflow: visible;
+    white-space: normal;
+    text-overflow: clip;
+} */
