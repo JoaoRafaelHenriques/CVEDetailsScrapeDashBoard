@@ -3,7 +3,7 @@
 /* Fazemos com que as coisas vão até ao limite do ecrã */
 body {
     height: 100svh;
-    width: 100svw;
+    /* width: 100svw; */
     margin: 0;
     padding: 0;
     /* background-image: url("../templates/cisco-asa-vuln.jpg"); */
