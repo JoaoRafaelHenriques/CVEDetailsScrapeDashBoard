@@ -55,7 +55,7 @@
 }
 
 /* .lines td:hover {
-    max-width: none; /* Remove a largura máxima ao passar o mouse */
+    max-width: none; 
     overflow: visible;
     white-space: normal;
     text-overflow: clip;
