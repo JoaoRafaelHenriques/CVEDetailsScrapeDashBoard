@@ -6,6 +6,32 @@ import os
 INFO_SERVER: configs.Server = None
 INFO_BASE_DE_DADOS = None
 
+def trata_missing(valor: str) -> str:
+    """Receba o valor da coluna MISSING da tabela VULNERABILTIIES.
+       Em caso de ser NULL troca para Válido, para ser fácil de entender no dashboard.
+
+    Args:
+        valor (str): valor da tabela
+
+    Returns:
+        str: novo valor
+    """
+    if valor is None:
+        return "Válido"
+    return valor
+
+def trata_categorias(categorias: str) -> str:
+    """Recebe a categoria vinda da base de dados na forma >a<><b<.
+       Transforma em a | b.
+
+    Args:
+        categorias (str): categorias
+
+    Returns:
+        str: categorias
+    """
+    return categorias.strip("<>").replace("<>", " | ")
+
 def leitura_ficheiro(caminho: str) -> int:
     """Lê um ficheiro e diz quantas linhas tem.
 

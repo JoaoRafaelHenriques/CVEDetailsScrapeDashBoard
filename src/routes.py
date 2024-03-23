@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from modules.utils import calculo_diffs_diarios, consulta_base_de_dados
+from modules.utils import calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing
 
 bp = Blueprint("pages", __name__)
 
@@ -37,7 +37,7 @@ def overview_vulnerabilities():
                                         OFFSET {offset};""")
     lista = list()
     for linha in resultados:
-        lista.append([linha[1], linha[2], linha[0], linha[3], linha[4]])
+        lista.append([linha[1], trata_categorias(linha[2]), linha[0], trata_missing(linha[3]), linha[4]])
     return render_template("vulnerabilities_results.html", resultados=lista)
 
 @bp.route("/overview_patches/", methods =["GET"])
@@ -95,14 +95,14 @@ def resumeflask():
     vulnerabilidades = consulta_base_de_dados("""SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES;""")
     patches = consulta_base_de_dados("""SELECT COUNT(DISTINCT(P_COMMIT)) FROM PATCHES;""")
     cwes = consulta_base_de_dados("""SELECT COUNT(*) FROM CWE_INFO;""")
-    projects = consulta_base_de_dados("""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE;""")
+    projetos = consulta_base_de_dados("""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE;""")
     
     # Construir a lista de resultados
     lista = list()
     lista.append(["Vulnerabilidades", vulnerabilidades[0][0]])
     lista.append(["Patches", patches[0][0]])
     lista.append(["CWEs", cwes[0][0]])
-    lista.append(["Projetos", projects[0][0]])
+    lista.append(["Projetos", projetos[0][0]])
     return render_template("resume.html", resultados=lista)
 
 
@@ -118,15 +118,17 @@ def overview_vulnerability():
     # Lemos o id e passamos para inteiro
     v_id = int(request.args.get("id"))
 
-    # Obtemos toda a informação
+    # Obtemos toda a informação com atenção para o caso de não haver cwes
     info = consulta_base_de_dados(f"""SELECT CVE, V_CLASSIFICATION, VULNERABILITY_URL, MISSING, PROJECT FROM VULNERABILITIES LEFT JOIN REPOSITORIES_SAMPLE ON REPOSITORIES_SAMPLE.R_ID = VULNERABILITIES.R_ID WHERE V_ID = {v_id};""")
     info2 = consulta_base_de_dados(f"""SELECT P_URL, P_COMMIT FROM PATCHES WHERE V_ID = {v_id};""")
     info3 = consulta_base_de_dados(f"""SELECT VULNERABILITIES_CWE.V_CWE, DESCRIPTION, ID_CATEGORY FROM VULNERABILITIES_CWE LEFT JOIN CWE_INFO ON CWE_INFO.V_CWE = VULNERABILITIES_CWE.V_CWE WHERE V_ID = {v_id};""")
-    info4 = consulta_base_de_dados(f"""SELECT NAME FROM VULNERABILITY_CATEGORY WHERE ID_CATEGORY = {info3[0][2]};""")
-    
+    if len(info3) > 0:
+        info4 = consulta_base_de_dados(f"""SELECT NAME FROM VULNERABILITY_CATEGORY WHERE ID_CATEGORY = {info3[0][2]};""")
+    else:
+        info4: list = []    
     dic: dict = {"Vulnerabilidades": [], "Patches": [], "CWE": [], "Categoria": []}
     for linha in info:
-        dic["Vulnerabilidades"].append([linha[0], linha[1], linha[2], linha[3], linha[4]])
+        dic["Vulnerabilidades"].append([linha[0], trata_categorias(linha[1]), linha[2], trata_missing(linha[3]), linha[4]])
     for linha in info2:
         dic["Patches"].append([linha[0], linha[1]])
     for linha in info3:
