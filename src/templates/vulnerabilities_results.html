@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>DataSet DashBoard</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/> 
+        <link rel="stylesheet" href="{{ url_for('static', filename='style_tabelas.css') }}"/> 
+        <link rel="stylesheet" href="../static/style.css"/>
+        <link rel="stylesheet" href="../static/style_tabelas.css"/>
+        <script src="{{ url_for('static', filename='pagging.js') }}"></script>
+    </head>
+    <body>
+        <nav class = "navbar">
+            <ul class = "menu"> 
+                <li class = "botao">
+                    <a class = "texto" href='#'>
+                        Atualização Diária
+                    </a>
+                </li>
+                <li class = "botao">
+                    <a class = "texto" href="http://localhost:5000/overview_vulnerabilities/?Projeto=&Page=1">
+                        Vulnerabilidades
+                    </a>
+                </li>
+                <li class = "botao">
+                    <a class = "texto" href='http://localhost:5000/overview_patches/?Projeto=&Page=1'>
+                        Patches
+                    </a>
+                </li>
+                <li class = "botao">
+                    <a class = "texto" href='#'>
+                        Cwes
+                    </a>
+                </li>
+                <li class = "botao">
+                    <a class = "texto" href='http://localhost:5000/resumeflask'>
+                        Resumo Informação
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class = "espacoBarraPesquisa">
+            <form class = "formPesquisa" href="overview_vulnerabilities/" method="GET">
+                <div class = "barraPesquisa">
+                    <span class = "imagemPesquisa"></span>
+                    <input name="Projeto" class = "barraTexto" placeholder = "Pesquise por um projeto...">
+                    <input class = "botaoPesquisa" type = "submit" value = "Pesquisa">
+                </div>
+            </form>  
+        </div>
+
+        <div class = "tabelaResultados">
+            <table class = "tabela">
+                <thead class = "headers">
+                    <tr>
+                        <th class = "head"> Vulnerabilidade </th>
+                        <th class = "head"> Categoria </th>
+                        <th class = "head"> Projeto </th>
+                        <th class = "head"> Desaparecida </th>
+                    </tr>
+                </thead>
+                {% for linha in resultados %}
+                <tbody class = "lines">
+                    <tr>
+                        <td><a href="http://localhost:5000/overview_vulnerability/?id={{ linha[4] }}"> {{linha[0]}} </a></td>
+                        <td> {{linha[1]}} </td>
+                        <td> {{linha[2]}} </td>
+                        <td> {{linha[3]}} </td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="blocoSetas">
+            <div class="setas">
+                <div class="esquerda">
+                    <a href="#" onclick="esquerda()">&laquo</a>
+                </div>
+                <div class="valorPage"> 
+                    <a id="numero"></a> 
+                </div>
+                <div class="direita">
+                    <a href="#"  onclick="direita()">&raquo</a>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

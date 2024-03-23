@@ -1,0 +1,27 @@
+{
+    "output": "/media/sda1/Projeto_Vulnerabilidades/VulnerabilidadesWork/output",
+    "diff_output": "/media/sda1/Projeto_Vulnerabilidades/VulnerabilidadesWork/output/diff_between_files",
+
+    "projetos": [
+        "apache", 
+        "apache_cassandra", 
+        "elastic", 
+        "glibc", 
+        "kernel", 
+        "mongodb", 
+        "mozilla", 
+        "mysql", 
+        "neo4j",
+        "postgresql", 
+        "redis", 
+        "sqlite", 
+        "xen"
+    ],
+
+    "base_de_dados": {
+        "host": "127.0.0.1",
+        "user": "root",
+        "password": "kubernetes",
+        "base_de_dados": "sw_vulnerability_db"
+    }
+}

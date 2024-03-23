@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Fazemos com que as coisas vão até ao limite do ecrã */
+body {
+    height: 100svh;
+    width: 100svw;
+    margin: 0;
+    padding: 0;
+    /* background-image: url("../templates/cisco-asa-vuln.jpg"); */
+    background-image: url('cisco-asa-vuln.jpg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-color: #000D16;
+    font-family: "Montserrat", sans-serif;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #232930;
+    opacity : 0.5;
+}
+
+/* list-style-type: none;  Esta linha retira as bolas atrás da palavra */
+.menu {
+    list-style-type: none; 
+    margin: 0;
+    padding: 2rem;
+}
+
+.botao {
+    display: inline-block;
+}
+
+/* text-decoration: none; Esta linha retira os sublinhados dos links */
+.texto {
+    text-decoration: none;
+    color: #00adb5 ;
+    font-size: 2rem;
+    padding: 0rem 1.5rem;
+    opacity : 1;
+    text-decoration: underline 0.01em rgba(0, 0, 0, 0) ;
+    transition: text-decoration-color 300ms;
+}
+
+.texto:hover,
+.texto:focus {
+    text-decoration-color: #00adb5;
+}
+
+.espacoBarraPesquisa {
+    padding: 2rem;
+}
+
+.formPesquisa {
+    display: flex;
+    justify-content: center;
+}
+
+.barraPesquisa{
+    width: 19rem;
+    background-color: #303841;
+    padding: 0.3rem;
+    display: flex;
+    justify-content: center;
+    border-radius: 10rem;
+}
+
+.barraTexto {
+    width: 65%;
+    border-style: hidden;
+    padding: 1.15rem;
+    background-color: #1e2329;
+    color: #00adb5;
+    border-radius: 10rem;
+}
+
+.barraTexto:hover,
+.barraTexto:focus {
+    background-color: #15191d;
+    border-color: #ffffff00;
+    outline: none;
+}
+
+.botaoPesquisa {
+    background-color: #00acb500;
+    opacity: 0.8;
+    color: #00adb5;
+    border: 0rem;
+}
+
+.botaoPesquisa:hover {
+    background-color: #00acb52a;
+    opacity: 0.8;
+    color: #00adb5;
+    border-radius: 2rem;
+}
+
+.textoIntro {
+    margin-top: 10rem;
+    margin-left: 43rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.invisivel {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.textoIntroManeiro {
+    font-size: 4rem;
+    color: #00adb5 ;
+}
+
+.git {
+    color: #00adb5 ;
+    font-size: 0.9rem;
+    text-decoration: None;
+    padding: 1rem;
+}
+
+.blocoSetas {
+    text-align: center;
+}
+
+.setas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.setas a{
+    text-decoration: none;
+    color: #00adb5 ;
+    opacity : 1;
+    text-decoration: underline 0.01em rgba(0, 0, 0, 0) ;
+    transition: text-decoration-color 300ms;
+}
+
+.valorPage {
+    margin-top: 0.5rem;
+    font-size: 2rem;
+}
+
+.esquerda a{
+    margin-right: 0.5rem;
+    font-size: 4rem;
+}
+
+.direita a{
+    margin-left: 0.5rem;
+    font-size: 4rem;
+}
+
+.esquerda a:hover{    
+    text-decoration-color: #00adb5;
+}
+
+.direita a:hover{    
+    text-decoration-color: #00adb5;
+}
+
+h1 {
+    margin: 3rem;
+    font-family: "Montserrat", sans-serif;
+    color: #00adb5;
+    display: flex;
+    justify-content: center;
+}

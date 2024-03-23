@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>DataSet DashBoard</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+        <link rel="stylesheet" href="../static/style.css"/>
+    </head>
+    <body>
+        <nav class = "navbar">
+            <ul class = "menu"> 
+                <li class = "botao">
+                    <a class = "texto" href='#'>
+                        Atualização Diária
+                    </a>
+                </li>
+                <li class = "botao">
+                    <a class = "texto" href="http://localhost:5000/overview_vulnerabilities/?Projeto=&Page=1">
+                        Vulnerabilidades
+                    </a>
+                </li>
+                <li class = "botao">
+                    <a class = "texto" href='http://localhost:5000/overview_patches/?Projeto=&Page=1'>
+                        Patches
+                    </a>
+                </li>
+                <li class = "botao">
+                    <a class = "texto" href='#'>
+                        Cwes
+                    </a>
+                </li>
+                <li class = "botao">
+                    <a class = "texto" href='http://localhost:5000/resumeflask'>
+                        Resumo Informação
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        
+
+        <div class = "textoIntro">
+            <div class = "invisivel">
+            </div>
+            <div class = "invisivel">
+                <a class = "textoIntroManeiro">
+                    Dashboard of a dataset with vulnerabilities
+                </a>
+                <a class = "git" href="https://github.com/JoaoRafaelHenriques/CVEDetailsScrapeDataset">
+                    Link: GitHub do dataset, clique para ir
+                </a>
+            </div>
+        </div>
+
+    </body>
+</html>

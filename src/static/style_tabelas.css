@@ -1,0 +1,50 @@
+.tabelaResultados {
+    width: 90%;
+    margin: auto;
+    background-color: #232930;
+    opacity : 0.5;
+    overflow: hidden;
+}
+
+.caixas {
+    margin: auto;
+    opacity : 0.5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.caixa {
+    background-color: #232930; 
+    margin-top: 2rem;  
+    width: 85rem; 
+}
+
+.tabela {
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: space-between;
+    color: #00adb5;
+    padding: 20px 20px 20px 20px;
+}
+
+.headers {
+    font-size: 25px;
+    border-bottom: 100px solid rgb(0, 0, 0);
+}
+
+.head {
+    padding: 10px 60px;
+}
+
+.lines {
+    font-size: 15px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.lines a {
+    text-decoration: None;
+    color: #00adb5;
+}
