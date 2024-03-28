@@ -63,8 +63,12 @@ def overview_patches():
 @bp.route("/overview_cwes/", methods=["GET"])
 def overview_cwes():
     # Obtemos a informação geral da base de dados sobre cwes
-    cwes = consulta_base_de_dados("""SELECT V_CWE, DESCRIPTION, NAME FROM CWE_INFO LEFT JOIN VULNERABILITY_CATEGORY ON VULNERABILITY_CATEGORY.ID_CATEGORY = CWE_INFO.ID_CATEGORY;""")
-    counter = consulta_base_de_dados("""SELECT V_CWE, COUNT(*) FROM VULNERABILITIES_CWE GROUP BY V_CWE;""")
+    
+    cwe = request.args.get("CWE")
+    if cwe is None:
+        cwe = ''
+    cwes = consulta_base_de_dados(f"""SELECT V_CWE, DESCRIPTION, NAME FROM CWE_INFO LEFT JOIN VULNERABILITY_CATEGORY ON VULNERABILITY_CATEGORY.ID_CATEGORY = CWE_INFO.ID_CATEGORY WHERE CWE_INFO.V_CWE = '{cwe}' OR '{cwe}' = '';""")
+    counter = consulta_base_de_dados(f"""SELECT V_CWE, COUNT(*) FROM VULNERABILITIES_CWE WHERE V_CWE = '{cwe}' OR '{cwe}' = '' GROUP BY V_CWE;""")
     
     dic: dict = {}
     for linha in counter:
