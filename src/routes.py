@@ -85,17 +85,30 @@ def daily_update():
         string += '\n'
     return string
 
-@bp.route("/resumeflask")
+@bp.route("/resumeflask/", methods=["GET"])
 def resumeflask():
     """ Route para a página de resumo da base de dados.
         Obtemos informação geral sobre o que se passa na mesma.
     """
     
+    # Lemos o id e passamos para inteiro
+    projeto = request.args.get("Projeto")
+    if projeto is None:
+        projeto = ""
+        r_id = -1
+    else:
+        try:
+            r_id = consulta_base_de_dados(f"""SELECT R_ID FROM REPOSITORIES_SAMPLE WHERE PROJECT = '{projeto}';""")[0][0]
+        except Exception as error:
+            print(error)
+            projeto = ""
+            r_id = -1
+            
     # Obter os valores
-    vulnerabilidades = consulta_base_de_dados("""SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES;""")
-    patches = consulta_base_de_dados("""SELECT COUNT(DISTINCT(P_COMMIT)) FROM PATCHES;""")
-    cwes = consulta_base_de_dados("""SELECT COUNT(*) FROM CWE_INFO;""")
-    projetos = consulta_base_de_dados("""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE;""")
+    vulnerabilidades = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES WHERE R_ID = {r_id} OR '{projeto}' = '';""")
+    patches = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(P_COMMIT)) FROM PATCHES WHERE R_ID = {r_id} OR '{projeto}' = '';""")
+    cwes = consulta_base_de_dados(f"""SELECT COUNT(*) FROM CWE_INFO RIGHT JOIN VULNERABILITIES_CWE ON VULNERABILITIES_CWE.V_CWE = CWE_INFO.V_CWE AND VULNERABILITIES_CWE.V_ID IN (SELECT V_ID FROM VULNERABILITIES WHERE R_ID = {r_id} OR '{projeto}' = '');""")
+    projetos = consulta_base_de_dados(f"""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE WHERE R_ID = {r_id} OR '{projeto}' = '';""")
     
     # Construir a lista de resultados
     lista = list()
@@ -103,6 +116,8 @@ def resumeflask():
     lista.append(["Patches", patches[0][0]])
     lista.append(["CWEs", cwes[0][0]])
     lista.append(["Projetos", projetos[0][0]])
+    
+    print(lista)
     return render_template("resume.html", resultados=lista)
 
 
