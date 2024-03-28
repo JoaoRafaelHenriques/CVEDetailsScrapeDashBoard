@@ -107,7 +107,7 @@ def resumeflask():
     # Obter os valores
     vulnerabilidades = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES WHERE R_ID = {r_id} OR '{projeto}' = '';""")
     patches = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(P_COMMIT)) FROM PATCHES WHERE R_ID = {r_id} OR '{projeto}' = '';""")
-    cwes = consulta_base_de_dados(f"""SELECT COUNT(*) FROM CWE_INFO RIGHT JOIN VULNERABILITIES_CWE ON VULNERABILITIES_CWE.V_CWE = CWE_INFO.V_CWE AND VULNERABILITIES_CWE.V_ID IN (SELECT V_ID FROM VULNERABILITIES WHERE R_ID = {r_id} OR '{projeto}' = '');""")
+    cwes = consulta_base_de_dados(f"""SELECT COUNT(*) FROM CWE_INFO WHERE V_CWE IN (SELECT V_CWE FROM VULNERABILITIES_CWE WHERE V_ID IN (SELECT V_ID FROM VULNERABILITIES WHERE R_ID = {r_id})) OR '{projeto}' = '';""")
     projetos = consulta_base_de_dados(f"""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE WHERE R_ID = {r_id} OR '{projeto}' = '';""")
     
     # Construir a lista de resultados
