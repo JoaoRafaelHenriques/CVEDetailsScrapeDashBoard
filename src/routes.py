@@ -19,8 +19,7 @@ def overview_vulnerabilities():
                 Page (str): página
                 Projeto (str): projeto
     """
-    # kernel linux, elastic search, apache cassandra e os restantes são normais
-
+    
     # Obtemos a informação dos parâmetros
     projeto = request.args.get("Projeto")
     offset = request.args.get("Page")
@@ -61,7 +60,7 @@ def overview_patches():
         lista.append([linha[1], linha[0]])
     return render_template("patches_results.html", resultados=lista)
 
-@bp.route("/overview_cwes")
+@bp.route("/overview_cwes/", methods=["GET"])
 def overview_cwes():
     # Obtemos a informação geral da base de dados sobre cwes
     resultados = consulta_base_de_dados("""SELECT V_CWE, COUNT(*) 
@@ -89,9 +88,13 @@ def daily_update():
 def resumeflask():
     """ Route para a página de resumo da base de dados.
         Obtemos informação geral sobre o que se passa na mesma.
+        
+        Args:
+            Dentro do request.args temos:
+                Projeto (str): projeto usado na pesquisa
     """
     
-    # Lemos o id e passamos para inteiro
+    # Tentamos identificar o projeto, se não conseguirmos usamos todos
     projeto = request.args.get("Projeto")
     if projeto is None:
         projeto = ""
