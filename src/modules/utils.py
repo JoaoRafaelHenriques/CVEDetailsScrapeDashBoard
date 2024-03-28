@@ -60,7 +60,8 @@ def leitura_ficheiro(caminho: str) -> int:
     """
     if os.path.exists(caminho):
         with open(caminho, "r") as file:
-            return len(file.readlines())
+            # Retiramos os headers que ocupam uma linha
+            return len(file.readlines()) - 1
     return 0        
 
 def calculo_diffs_diarios() -> dict:
