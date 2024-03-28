@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from modules.utils import calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing
+from modules.utils import calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade
 
 bp = Blueprint("pages", __name__)
 
@@ -126,7 +126,9 @@ def overview_vulnerability():
         info4 = consulta_base_de_dados(f"""SELECT NAME FROM VULNERABILITY_CATEGORY WHERE ID_CATEGORY = {info3[0][2]};""")
     else:
         info4: list = []    
-    dic: dict = {"Vulnerabilidades": [], "Patches": [], "CWE": [], "Categoria": []}
+    info5 = consulta_base_de_dados(f"""SELECT * FROM VETORES WHERE V_ID = {v_id};""")
+    
+    dic: dict = {"Vulnerabilidades": [], "Patches": [], "CWE": [], "Categoria": [], "Vetores": []}
     for linha in info:
         dic["Vulnerabilidades"].append([linha[0], trata_categorias(linha[1]), linha[2], trata_missing(linha[3]), linha[4]])
     for linha in info2:
@@ -135,4 +137,10 @@ def overview_vulnerability():
         dic["CWE"].append([linha[0], linha[1]])
     for linha in info4:
         dic["Categoria"].append([linha[0]])
+    for linha in info5:
+        dic["Vetores"].append([linha[0], linha[1], linha[2], linha[3], linha[4], linha[5], linha[6], linha[7], linha[8], linha[9], linha[10], linha[11], linha[12], linha[14], linha[15], linha[16], linha[17], linha[18]])
+    
+    # Removemos os Nones do dicionário
+    dic = trata_info_vulnerabidade(dic)
+    
     return render_template("overview_vulnerability.html", resultados = dic)

@@ -19,6 +19,22 @@
     width: 70rem; 
 }
 
+.tabelaV2 {
+    color: #00adb5;
+}
+
+.headV2 {
+    font-size: 2rem;
+    padding: 1rem 2rem;
+}
+
+.headersV2 td {
+    padding-right: 3rem;
+    font-size:1rem;
+    text-align: center;
+    vertical-align: middle;
+}
+
 .tabela {
     margin-left: auto;
     margin-right: auto;

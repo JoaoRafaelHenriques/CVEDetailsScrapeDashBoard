@@ -6,6 +6,23 @@ import os
 INFO_SERVER: configs.Server = None
 INFO_BASE_DE_DADOS = None
 
+def trata_info_vulnerabidade(dic: dict) -> dict:
+    """Retira todos os Nones do dicionário para uma melhor apresentação.
+
+    Args:
+        dic (dict): dicionário com a informação da vulnerabilidade
+
+    Returns:
+        dict: dicionário sem None
+    """
+    keys = dic.keys()
+    for key in keys:
+        for values in dic[key]:
+            for index, value in enumerate(values):
+                if value == 'None':
+                    values[index] = "-"
+    return dic
+
 def trata_missing(valor: str) -> str:
     """Receba o valor da coluna MISSING da tabela VULNERABILTIIES.
        Em caso de ser NULL troca para Válido, para ser fácil de entender no dashboard.
