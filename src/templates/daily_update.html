@@ -47,35 +47,33 @@
             </ul>
         </nav>
 
-        <div class = "espacoBarraPesquisa">
-            <form class = "formPesquisa" href="resumeflask/" method="GET">
-                <div class = "barraPesquisa">
-                    <span class = "imagemPesquisa"></span>
-                    <input name="Projeto" class = "barraTexto" placeholder = "Pesquise por um projeto...">
-                    <input class = "botaoPesquisa" type = "submit" value = "Pesquisa">
-                </div>
-            </form>  
-        </div>
+        <h1> Informação do dia {{ resultados["Data"][0] }}! </h1>
 
-        <div class = "tabelaResultados">
-            <table class = "tabela">
-                <thead class = "headers">
-                    <tr>
-                        <th class = "head"> Valor </th>
-                        <th class = "head"> Contagem </th>
-                    </tr>
-                </thead>
-                {% for linha in resultados %}
-                <tbody class = "lines">
-                    <tr>
-                        <td> {{linha[0]}} </td>
-                        <td> {{linha[1]}} </td>
-                        <td> {{linha[2]}} </td>
-                        <td> {{linha[3]}} </td>
-                    </tr>
-                </tbody>
-                {% endfor %}
-            </table>
-        </div>
+        <div class = "caixas">
+            <div class = "caixa">
+                <table class = "tabela">
+                    <thead class = "headers">
+                        <tr>
+                            <th class = "head"> Projeto </th>
+                            <th class = "head"> Atualizadas </th>
+                            <th class = "head"> Desaparecidas </th>
+                            <th class = "head"> Iguais </th>
+                            <th class = "head"> Novas </th>
+                        </tr>
+                    </thead>
+                    {% for chave, valor in resultados["Info"].items() %}
+                    <tbody class = "lines">
+                        <tr>
+                            <td class = "projeto"> {{chave}} </td>
+                            <td> {{valor[0]}} </td>
+                            <td> {{valor[1]}} </td>
+                            <td> {{valor[2]}} </td>
+                            <td> {{valor[3]}} </td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+
     </body>
 </html>

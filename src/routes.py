@@ -112,18 +112,15 @@ def overview_cwes():
             dic["CWE-" + chave] = [dic["CWE-" + chave], linha[1], linha[2]]
     return render_template("cwes_results.html", resultados = dic)
 
-@bp.route("/daily_update")
+@bp.route("/daily_update/")
 def daily_update():
+    
     # Obtemos toda a informação do dia mais atualizado possivel
     # Ordem alfabética, atualizadas, desaparecidas, iguais, novas
-    info = calculo_diffs_diarios()
-    string: str = ''
-    for key, value in info.items():
-        string += key
-        for num in value:
-            string += '\n\t' + str(num)
-        string += '\n'
-    return string
+    info, data = calculo_diffs_diarios()
+    dic: dict = {"Data": [str(data)], "Info": info}
+
+    return render_template("daily_update.html", resultados = dic)
 
 @bp.route("/resumeflask/", methods=["GET"])
 def resumeflask():

@@ -68,6 +68,7 @@ def calculo_diffs_diarios() -> dict:
 
     Returns:
         dict: dicionario com informação (atualizadas, desaparecidas, iguais, novas)
+        data: data do dia em que foi feito o cálculo
     """
     
     # Obtemos a data na forma YYYY-MM-DD
@@ -92,8 +93,10 @@ def calculo_diffs_diarios() -> dict:
             if projeto in tipo:
                 caminho_tipo = os.path.join(caminho, tipo)
                 info[projeto].append(leitura_ficheiro(caminho_tipo))
- 
-    return info
+    
+    if f"{projeto}_{data_hoje}" in caminho:
+        return info, data_hoje
+    return info, data_ontem
 
 def consulta_base_de_dados(pesquisa: str) -> list:
     """Faz uma pesquisa na base de dados e retorna a lista de resultados.

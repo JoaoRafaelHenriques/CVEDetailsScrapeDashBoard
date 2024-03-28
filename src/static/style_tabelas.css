@@ -68,9 +68,7 @@
     text-overflow: ellipsis;
 }
 
-/* .lines td:hover {
-    max-width: none; 
-    overflow: visible;
-    white-space: normal;
-    text-overflow: clip;
-} */
+.projeto {
+    font-size: 1rem;
+    font-weight: bold;
+}
