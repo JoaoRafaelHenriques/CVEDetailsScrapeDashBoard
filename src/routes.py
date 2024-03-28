@@ -41,6 +41,16 @@ def overview_vulnerabilities():
 
 @bp.route("/overview_patches/", methods =["GET"])
 def overview_patches():
+    """ Tratamos dos patches.
+        Pode ser feita a pesquisa de todos ou por projeto.
+        
+        Args:
+            Dentro do request.args temos:
+                Projeto (str): projeto usado na pesquisa
+                Page (str): página
+    """
+    
+    # Procuramos o projeto e a página a ser utilizados
     projeto = request.args.get("Projeto")
     offset = request.args.get("Page")
     size = 15
@@ -48,6 +58,7 @@ def overview_patches():
         offset = 0
     else:
         offset = (int(offset) - 1) * size
+        
     # Obtemos a informação geral da base de dados sobre patches
     resultados = consulta_base_de_dados(f"""SELECT DISTINCT(P_COMMIT), PROJECT
                                         FROM PATCHES 
@@ -62,14 +73,33 @@ def overview_patches():
 
 @bp.route("/overview_cwes/", methods=["GET"])
 def overview_cwes():
-    # Obtemos a informação geral da base de dados sobre cwes
+    """ Trata-se das cwes do dataset.
+        São apresentadas todas as cwe, assim como o número de vezes que aparecem
+        e algumas informações extra.
+        
+        Args:
+            Dentro do request.args temos:
+                CWE (str): cwe pesquisada
+
+    """
     
+    # Tentamos obter a cwe
     cwe = request.args.get("CWE")
     if cwe is None:
         cwe = ''
-    cwes = consulta_base_de_dados(f"""SELECT V_CWE, DESCRIPTION, NAME FROM CWE_INFO LEFT JOIN VULNERABILITY_CATEGORY ON VULNERABILITY_CATEGORY.ID_CATEGORY = CWE_INFO.ID_CATEGORY WHERE CWE_INFO.V_CWE = '{cwe}' OR '{cwe}' = '';""")
-    counter = consulta_base_de_dados(f"""SELECT V_CWE, COUNT(*) FROM VULNERABILITIES_CWE WHERE V_CWE = '{cwe}' OR '{cwe}' = '' GROUP BY V_CWE;""")
+        
+    # Procuramos a informação
+    cwes = consulta_base_de_dados(f"""SELECT V_CWE, DESCRIPTION, NAME 
+                                     FROM CWE_INFO 
+                                     LEFT JOIN VULNERABILITY_CATEGORY 
+                                     ON VULNERABILITY_CATEGORY.ID_CATEGORY = CWE_INFO.ID_CATEGORY 
+                                     WHERE CWE_INFO.V_CWE = '{cwe}' OR '{cwe}' = '';""")
+    counter = consulta_base_de_dados(f"""SELECT V_CWE, COUNT(*) 
+                                     FROM VULNERABILITIES_CWE 
+                                     WHERE V_CWE = '{cwe}' OR '{cwe}' = '' 
+                                     GROUP BY V_CWE;""")
     
+    # Construimos os resultados com o que obtivemos
     dic: dict = {}
     for linha in counter:
         dic["CWE-" + linha[0]] = linha[1]
@@ -133,7 +163,6 @@ def resumeflask():
     
     print(lista)
     return render_template("resume.html", resultados=lista)
-
 
 @bp.route("/overview_vulnerability/", methods=["GET"])
 def overview_vulnerability():
