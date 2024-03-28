@@ -11,7 +11,9 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style_tabelas.css') }}"/>
         <link rel="stylesheet" href="../static/style.css"/>
+        <link rel="stylesheet" href="../static/style_tabelas.css"/>
     </head>
     <body>
         <nav class = "navbar">
@@ -32,7 +34,7 @@
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto" href='#'>
+                    <a class = "texto" href='http://localhost:5000/overview_cwes/'>
                         Cwes
                     </a>
                 </li>
@@ -54,7 +56,28 @@
             </form>    
         </div>
 
-        
+        <div class = "tabelaResultados">
+            <table class = "tabela">
+                <thead class = "headers">
+                    <tr>
+                        <th class = "head"> CWE </th>
+                        <th class = "head"> Número de Vulnerabilidades </th>
+                        <th class = "head"> Descrição </th>
+                        <th class = "head"> Categoria </th>
+                    </tr>
+                </thead>
+                {% for chave, valor in resultados.items() %}
+                <tbody class = "lines">
+                    <tr>
+                        <td> {{chave}} </td>
+                        <td> {{valor[0]}} </td>
+                        <td> {{valor[1]}} </td>
+                        <td> {{valor[2]}} </td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
 
     </body>
 </html>

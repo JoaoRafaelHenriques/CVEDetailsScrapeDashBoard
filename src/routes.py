@@ -63,13 +63,20 @@ def overview_patches():
 @bp.route("/overview_cwes/", methods=["GET"])
 def overview_cwes():
     # Obtemos a informação geral da base de dados sobre cwes
-    resultados = consulta_base_de_dados("""SELECT V_CWE, COUNT(*) 
-                                        FROM VULNERABILITIES_CWE 
-                                        GROUP BY V_CWE;""")
-    string: str = ""
-    for linha in resultados:
-        string += f"CWE-{linha[0]}: {linha[1]} times\n"
-    return string
+    cwes = consulta_base_de_dados("""SELECT V_CWE, DESCRIPTION, NAME FROM CWE_INFO LEFT JOIN VULNERABILITY_CATEGORY ON VULNERABILITY_CATEGORY.ID_CATEGORY = CWE_INFO.ID_CATEGORY;""")
+    counter = consulta_base_de_dados("""SELECT V_CWE, COUNT(*) FROM VULNERABILITIES_CWE GROUP BY V_CWE;""")
+    
+    dic: dict = {}
+    for linha in counter:
+        dic["CWE-" + linha[0]] = linha[1]
+
+    for linha in cwes:
+        chave = linha[0]
+        if "CWE-" + chave not in dic.keys():
+            dic["CWE-" + chave] = [0, linha[1], linha[2]]
+        else:
+            dic["CWE-" + chave] = [dic["CWE-" + chave], linha[1], linha[2]]
+    return render_template("cwes_results.html", resultados = dic)
 
 @bp.route("/daily_update")
 def daily_update():
