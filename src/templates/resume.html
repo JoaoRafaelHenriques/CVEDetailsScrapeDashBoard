@@ -14,7 +14,9 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='style_tabelas.css') }}"/> 
         <link rel="stylesheet" href="../static/style.css"/>
         <link rel="stylesheet" href="../static/style_tabelas.css"/>
-        <script src="{{ url_for('static', filename='pagging.js') }}"></script>
+        <link rel="stylesheet" href="../static/style_grafico.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="{{ url_for('static', filename='grafico.js') }}"></script>
     </head>
     <body>
         <nav class = "navbar">
@@ -65,17 +67,23 @@
                         <th class = "head"> Contagem </th>
                     </tr>
                 </thead>
-                {% for linha in resultados %}
+                {% for key, value in results['resultados'].items() %}
                 <tbody class = "lines">
                     <tr>
-                        <td> {{linha[0]}} </td>
-                        <td> {{linha[1]}} </td>
-                        <td> {{linha[2]}} </td>
-                        <td> {{linha[3]}} </td>
+                        <td> {{key}} </td>
+                        <td> {{value}} </td>
                     </tr>
                 </tbody>
                 {% endfor %}
             </table>
         </div>
+
+        <div class="ChartTitle">
+            <h1> CWEs Mais Comuns </h1>
+            <div class="myChartDiv">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+        
     </body>
 </html>

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, jsonify
 from modules.utils import calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade
 
 bp = Blueprint("pages", __name__)
@@ -152,14 +152,16 @@ def resumeflask():
     projetos = consulta_base_de_dados(f"""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE WHERE R_ID = {r_id} OR '{projeto}' = '';""")
     
     # Construir a lista de resultados
-    lista = list()
-    lista.append(["Vulnerabilidades", vulnerabilidades[0][0]])
-    lista.append(["Patches", patches[0][0]])
-    lista.append(["CWEs", cwes[0][0]])
-    lista.append(["Projetos", projetos[0][0]])
-    
-    print(lista)
-    return render_template("resume.html", resultados=lista)
+    dic: dict = {}
+    dic_auxiliar: dict = {}
+
+    dic_auxiliar["Vulnerabilidades"] = vulnerabilidades[0][0]
+    dic_auxiliar["Patches"] = patches[0][0]
+    dic_auxiliar["CWEs"] = cwes[0][0]
+    dic_auxiliar["Projetos"] = projetos[0][0]
+    dic['resultados'] = dic_auxiliar
+        
+    return render_template("resume.html", results=dic)
 
 @bp.route("/overview_vulnerability/", methods=["GET"])
 def overview_vulnerability():
@@ -199,3 +201,34 @@ def overview_vulnerability():
     dic = trata_info_vulnerabidade(dic)
     
     return render_template("overview_vulnerability.html", resultados = dic)
+
+@bp.route("/grafico/")
+def grafico():
+    dic: dict = {"Data": [], "Titulos": []}
+    
+    # Escolher as 5 mais comuns
+    cwes_comuns = consulta_base_de_dados("""SELECT V_CWE, COUNT(*) FROM VULNERABILITIES_CWE GROUP BY V_CWE ORDER BY COUNT(*) DESC LIMIT 5;""");
+    for cwe in cwes_comuns:
+        dic["Titulos"].append([f'CWE-{str(cwe[0])}'])
+        
+    # Fazer a contagem para cada ano
+    for cwe in dic["Titulos"]:
+        info = consulta_base_de_dados(f"""SELECT CVE, V_CWE FROM VULNERABILITIES INNER JOIN VULNERABILITIES_CWE ON VULNERABILITIES_CWE.V_ID = VULNERABILITIES.V_ID WHERE VULNERABILITIES_CWE.V_CWE = {cwe[0][4:]};""")
+        info_tratada: dict = {
+            '1999': [], '2000': [], '2001': [], '2002': [], '2003': [], '2004': [], '2005': [], 
+            '2006': [], '2007': [], '2008': [], '2009': [], '2010': [], '2011': [], '2012': [],
+            '2013': [], '2014': [], '2015': [], '2016': [], '2017': [], '2018': [], '2019': [],
+            '2020': [], '2021': [], '2022': [], '2023': [], '2024': []
+        }
+        for linha in info:
+            if linha[0] is None:
+                continue
+            cve = linha[0][4:8]
+            info_tratada[cve].append(linha[1])
+        
+        for c, v in info_tratada.items():
+            info_tratada[c] = len(v)
+        
+        dic["Data"].append(info_tratada)
+    print(dic)
+    return jsonify(dic)

@@ -1,0 +1,19 @@
+.ChartTitle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.ChartTitle h1 {
+    color: #00adb5;
+    font-size: 2rem;
+}
+
+.myChartDiv{
+    background-color: rgba(26, 59, 59, 0.368);
+    width: 50rem;
+}
+
