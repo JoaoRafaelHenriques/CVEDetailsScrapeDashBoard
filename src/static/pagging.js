@@ -1,16 +1,11 @@
+// Acontece sempre que a página carrega
 window.onload = function() {
-    // Obtenha o valor do parâmetro "Page" da URL
-    let url = new URL(window.location.href);
-    let page = url.searchParams.get("Page");
+
+    // Obtemos o valor do parâmetro "Page" da URL
+    let [url, search_params, page] = url_tratamento();
     
-    // Verifique se o parâmetro "Page" existe na URL
-    if (page !== null) {
-        // Atualize o texto do link com o valor do parâmetro "Page"
-        document.getElementById("numero").textContent = page;
-    } else {
-         // Atualize o texto do link com o valor do parâmetro "Page"
-         document.getElementById("numero").textContent = 1;
-    }
+    // Atualizamos o texto do link com o valor do parâmetro "Page"
+    document.getElementById("numero").textContent = page;
 };
 
 function url_tratamento(){

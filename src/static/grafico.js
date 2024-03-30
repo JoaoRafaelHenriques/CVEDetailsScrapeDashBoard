@@ -1,35 +1,43 @@
-window.onload = function() {
-    
+function getUrlParam(){
+    // Obtemos o URL
     let queryString = window.location.search;
+    // Procuramos pelos parâmetros e retornamos o Projeto
     let urlParams = new URLSearchParams(queryString);
-    queryString = urlParams.get("Projeto");
+    return urlParams.get("Projeto");
+}
 
-    // Pedimos os dados ao flask
+// Acontece sempre que a página carrega
+window.onload = function() {
+
+    // Obtemos o projeto
+    queryString = getUrlParam();
+
+    // Pedimos os dados ao flask com o parâmetro
     fetch('/grafico/?Projeto=' + queryString)
     .then(response => {
 
-        // Verificando se a solicitação foi bem-sucedida (status 200)
+        // Verificamos se tudo está correto
         if (!response.ok) {
             throw new Error('Erro ao buscar os dados.');
         }
-        // Convertendo a resposta para JSON
+        // Convertemos a resposta para JSON
         return response.json();
     })
     .then(data => {
 
         // {"Data": {Ano: num}, "Titulos": [[],[],[]]}
-        console.log(data);
-
-        // Mexemos nos dados agora
+        // Colocamos todos os Y sabendo que o X é igual para todos
         let X1 = Object.keys(data.Data[0]);
         let Y1 = Object.values(data.Data[0]);
         let Y2 = Object.values(data.Data[1]);
         let Y3 = Object.values(data.Data[2]);
         let Y4 = Object.values(data.Data[3]);
         let Y5 = Object.values(data.Data[4]);
-
+        
+        // Onde queremos colocar o gráfico no HTML
         let ctx = document.getElementById('myChart');
 
+        // COntruímos o gráfico
         new Chart(ctx, {
             type: 'line',
             data: {
@@ -83,7 +91,7 @@ window.onload = function() {
         });
     })
     .catch(error => {
-        // Lidando com erros
+        // Lidamos com possíveis erros
         console.log(error);
     });
 };
