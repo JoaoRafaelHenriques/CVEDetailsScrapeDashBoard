@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from modules.utils import calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade
+from modules.utils import calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade, obter_id_projeto
 
 bp = Blueprint("pages", __name__)
 
@@ -114,7 +114,11 @@ def overview_cwes():
 
 @bp.route("/daily_update/")
 def daily_update():
-    
+    """Obtemos a informação do último dia de atualizações.
+
+    Returns:
+        resultados: dicionário com a Data e Informação de cada projeto {DATA: DD-MM-YYY, INFO: {PROJETO: [0,0,0,0] ... }}
+    """
     # Obtemos toda a informação do dia mais atualizado possivel
     # Ordem alfabética, atualizadas, desaparecidas, iguais, novas
     info, data = calculo_diffs_diarios()
@@ -134,22 +138,13 @@ def resumeflask():
     
     # Tentamos identificar o projeto, se não conseguirmos usamos todos
     projeto = request.args.get("Projeto")
-    if projeto is None:
-        projeto = ""
-        r_id = -1
-    else:
-        try:
-            r_id = consulta_base_de_dados(f"""SELECT R_ID FROM REPOSITORIES_SAMPLE WHERE PROJECT = '{projeto}';""")[0][0]
-        except Exception as error:
-            print(error)
-            projeto = ""
-            r_id = -1
+    r_id = obter_id_projeto(projeto)
             
     # Obter os valores
-    vulnerabilidades = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES WHERE R_ID = {r_id} OR '{projeto}' = '';""")
-    patches = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(P_COMMIT)) FROM PATCHES WHERE R_ID = {r_id} OR '{projeto}' = '';""")
-    cwes = consulta_base_de_dados(f"""SELECT COUNT(*) FROM CWE_INFO WHERE V_CWE IN (SELECT V_CWE FROM VULNERABILITIES_CWE WHERE V_ID IN (SELECT V_ID FROM VULNERABILITIES WHERE R_ID = {r_id})) OR '{projeto}' = '';""")
-    projetos = consulta_base_de_dados(f"""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE WHERE R_ID = {r_id} OR '{projeto}' = '';""")
+    vulnerabilidades = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES WHERE R_ID = {r_id} OR {r_id} = -1;""")
+    patches = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(P_COMMIT)) FROM PATCHES WHERE R_ID = {r_id} OR {r_id} = -1;""")
+    cwes = consulta_base_de_dados(f"""SELECT COUNT(*) FROM CWE_INFO WHERE V_CWE IN (SELECT V_CWE FROM VULNERABILITIES_CWE WHERE V_ID IN (SELECT V_ID FROM VULNERABILITIES WHERE R_ID = {r_id})) OR {r_id} = -1;""")
+    projetos = consulta_base_de_dados(f"""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE WHERE R_ID = {r_id} OR {r_id} = -1;""")
     
     # Construir a lista de resultados
     dic: dict = {}
@@ -204,19 +199,20 @@ def overview_vulnerability():
 
 @bp.route("/grafico/", methods=["GET"])
 def grafico():
+    """ Route para a página de resumo da base de dados.
+        Este endpoint apenas serve para recolher a informação do gráfico.
+        
+        Args:
+            Dentro do request.args temos:
+                Projeto (str): projeto usado na pesquisa
+        Returns:
+            Passamos em JSON:
+                dic (dic|JSON): dicionário com todas as cwes mais comuns e a sua contagem por ano
+    """
     
+    # Obtemos a informação de um projeto
     projeto = request.args.get("Projeto")
-    if projeto is None:
-        projeto = ""
-        r_id = -1
-        print("Aqui")
-    else:
-        try:
-            r_id = consulta_base_de_dados(f"""SELECT R_ID FROM REPOSITORIES_SAMPLE WHERE PROJECT = '{projeto}';""")[0][0]
-        except Exception as error:
-            print(error)
-            projeto = ""
-            r_id = -1
+    r_id = obter_id_projeto(projeto)
             
     dic: dict = {"Data": [], "Titulos": []}
     
@@ -225,7 +221,7 @@ def grafico():
                                          FROM VULNERABILITIES_CWE 
                                          LEFT JOIN VULNERABILITIES 
                                          ON VULNERABILITIES.V_ID = VULNERABILITIES_CWE.V_ID
-                                         WHERE R_ID = {r_id} OR '{projeto}' = ""
+                                         WHERE R_ID = {r_id} OR {r_id} = -1
                                          GROUP BY VULNERABILITIES_CWE.V_CWE ORDER BY COUNT(*) DESC LIMIT 5;""");
     for cwe in cwes_comuns:
         dic["Titulos"].append([f'CWE-{str(cwe[0])}'])
@@ -235,21 +231,20 @@ def grafico():
         info = consulta_base_de_dados(f"""SELECT CVE, V_CWE 
                                       FROM VULNERABILITIES 
                                       INNER JOIN VULNERABILITIES_CWE ON VULNERABILITIES_CWE.V_ID = VULNERABILITIES.V_ID 
-                                      WHERE VULNERABILITIES_CWE.V_CWE = {cwe[0][4:]} AND (R_ID = {r_id} OR '{projeto}' = "");""")
+                                      WHERE VULNERABILITIES_CWE.V_CWE = {cwe[0][4:]} AND (R_ID = {r_id} OR {r_id} = -1);""")
         info_tratada: dict = {
-            '1999': [], '2000': [], '2001': [], '2002': [], '2003': [], '2004': [], '2005': [], 
-            '2006': [], '2007': [], '2008': [], '2009': [], '2010': [], '2011': [], '2012': [],
-            '2013': [], '2014': [], '2015': [], '2016': [], '2017': [], '2018': [], '2019': [],
-            '2020': [], '2021': [], '2022': [], '2023': [], '2024': []
+            '1999': 0, '2000': 0, '2001': 0, '2002': 0, '2003': 0, '2004': 0, '2005': 0, 
+            '2006': 0, '2007': 0, '2008': 0, '2009': 0, '2010': 0, '2011': 0, '2012': 0,
+            '2013': 0, '2014': 0, '2015': 0, '2016': 0, '2017': 0, '2018': 0, '2019': 0,
+            '2020': 0, '2021': 0, '2022': 0, '2023': 0, '2024': 0
         }
+        
+        # Para cada linha adicionamos uma ocorrência em cada ano
         for linha in info:
             if linha[0] is None:
                 continue
             cve = linha[0][4:8]
-            info_tratada[cve].append(linha[1])
-        
-        for c, v in info_tratada.items():
-            info_tratada[c] = len(v)
+            info_tratada[cve] += 1
         
         dic["Data"].append(info_tratada)
     return jsonify(dic)

@@ -99,6 +99,17 @@ def calculo_diffs_diarios() -> dict:
         return info, data_hoje
     return info, data_ontem
 
+def obter_id_projeto(projeto: str) -> int:
+    """Obtém o id do projeto através do seu nome.
+
+    Args:
+        projeto (str): projeto
+
+    Returns:
+        int: id do projeto
+    """
+    return INFO_BASE_DE_DADOS.obter_id_projeto(projeto)
+
 def consulta_base_de_dados(pesquisa: str) -> list:
     """Faz uma pesquisa na base de dados e retorna a lista de resultados.
 

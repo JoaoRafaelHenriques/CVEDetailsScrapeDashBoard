@@ -69,6 +69,21 @@ class Base_de_Dados:
         resultados = [list(item) for item in cursor.fetchall()]
         cursor.close()
         return resultados
+    
+    def obter_id_projeto(self, projeto: str) -> int:
+        """ Recebe o nome de um projeto e retorna o id do mesmo.
+        
+        Args:
+            projeto (str): projeto
+            
+        Returns:
+            int: id do projeto na base de dados
+        """
+        if projeto is not None:
+            r_id = self.consulta(f"""SELECT R_ID FROM REPOSITORIES_SAMPLE WHERE PROJECT = '{projeto}';""")[0][0]
+            return r_id
+        else:
+            return -1
         
         
         
