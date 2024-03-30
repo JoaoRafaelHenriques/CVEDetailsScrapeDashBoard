@@ -202,18 +202,40 @@ def overview_vulnerability():
     
     return render_template("overview_vulnerability.html", resultados = dic)
 
-@bp.route("/grafico/")
+@bp.route("/grafico/", methods=["GET"])
 def grafico():
+    
+    projeto = request.args.get("Projeto")
+    if projeto is None:
+        projeto = ""
+        r_id = -1
+        print("Aqui")
+    else:
+        try:
+            r_id = consulta_base_de_dados(f"""SELECT R_ID FROM REPOSITORIES_SAMPLE WHERE PROJECT = '{projeto}';""")[0][0]
+        except Exception as error:
+            print(error)
+            projeto = ""
+            r_id = -1
+            
     dic: dict = {"Data": [], "Titulos": []}
     
     # Escolher as 5 mais comuns
-    cwes_comuns = consulta_base_de_dados("""SELECT V_CWE, COUNT(*) FROM VULNERABILITIES_CWE GROUP BY V_CWE ORDER BY COUNT(*) DESC LIMIT 5;""");
+    cwes_comuns = consulta_base_de_dados(f"""SELECT V_CWE, COUNT(*) 
+                                         FROM VULNERABILITIES_CWE 
+                                         LEFT JOIN VULNERABILITIES 
+                                         ON VULNERABILITIES.V_ID = VULNERABILITIES_CWE.V_ID
+                                         WHERE R_ID = {r_id} OR '{projeto}' = ""
+                                         GROUP BY VULNERABILITIES_CWE.V_CWE ORDER BY COUNT(*) DESC LIMIT 5;""");
     for cwe in cwes_comuns:
         dic["Titulos"].append([f'CWE-{str(cwe[0])}'])
         
     # Fazer a contagem para cada ano
     for cwe in dic["Titulos"]:
-        info = consulta_base_de_dados(f"""SELECT CVE, V_CWE FROM VULNERABILITIES INNER JOIN VULNERABILITIES_CWE ON VULNERABILITIES_CWE.V_ID = VULNERABILITIES.V_ID WHERE VULNERABILITIES_CWE.V_CWE = {cwe[0][4:]};""")
+        info = consulta_base_de_dados(f"""SELECT CVE, V_CWE 
+                                      FROM VULNERABILITIES 
+                                      INNER JOIN VULNERABILITIES_CWE ON VULNERABILITIES_CWE.V_ID = VULNERABILITIES.V_ID 
+                                      WHERE VULNERABILITIES_CWE.V_CWE = {cwe[0][4:]} AND (R_ID = {r_id} OR '{projeto}' = "");""")
         info_tratada: dict = {
             '1999': [], '2000': [], '2001': [], '2002': [], '2003': [], '2004': [], '2005': [], 
             '2006': [], '2007': [], '2008': [], '2009': [], '2010': [], '2011': [], '2012': [],
@@ -230,5 +252,4 @@ def grafico():
             info_tratada[c] = len(v)
         
         dic["Data"].append(info_tratada)
-    print(dic)
     return jsonify(dic)

@@ -1,7 +1,11 @@
 window.onload = function() {
     
+    let queryString = window.location.search;
+    let urlParams = new URLSearchParams(queryString);
+    queryString = urlParams.get("Projeto");
+
     // Pedimos os dados ao flask
-    fetch('/grafico/')
+    fetch('/grafico/?Projeto=' + queryString)
     .then(response => {
 
         // Verificando se a solicitação foi bem-sucedida (status 200)
@@ -13,9 +17,7 @@ window.onload = function() {
     })
     .then(data => {
 
-        // Dados obtidos com sucesso
-        // {123:12, 1:123}
-        // {"Data": [[],[],[]], "Labels": [[],[],[]], "Titulos": [[],[],[]]}
+        // {"Data": {Ano: num}, "Titulos": [[],[],[]]}
         console.log(data);
 
         // Mexemos nos dados agora
