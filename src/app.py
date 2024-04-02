@@ -14,7 +14,14 @@ def create_app():
     return app
 
 if __name__ == '__main__':
-    create_app()
+    import sys
+    port = 5000  # Porta padrão
+
+    if len(sys.argv) > 1:
+        port = int(sys.argv[1])
+
+    app = create_app()
+    app.run(port=port)
     
     
-# flask run
+# python3 app.py PORTA

@@ -21,27 +21,27 @@
         <nav class = "navbar">
             <ul class = "menu"> 
                 <li class = "botao">
-                    <a class = "texto" href='http://localhost:5000/daily_update/'>
+                    <a class = "texto" href='/daily_update/'>
                         Atualização Diária
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto" href="http://localhost:5000/overview_vulnerabilities/?Projeto=&Page=1">
+                    <a class = "texto" href="/overview_vulnerabilities/?Projeto=&Page=1">
                         Vulnerabilidades
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto" href='http://localhost:5000/overview_patches/?Projeto=&Page=1'>
+                    <a class = "texto" href='/overview_patches/?Projeto=&Page=1'>
                         Patches
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto" href='http://localhost:5000/overview_cwes/'>
+                    <a class = "texto" href='/overview_cwes/'>
                         Cwes
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto" href='http://localhost:5000/resumeflask/?Projeto='>
+                    <a class = "texto" href='/resumeflask/?Projeto='>
                         Resumo Informação
                     </a>
                 </li>
@@ -49,7 +49,7 @@
         </nav>
 
         <div class = "espacoBarraPesquisa">
-            <form class = "formPesquisa" href="overview_vulnerabilities/" method="GET">
+            <form class = "formPesquisa" href="/overview_vulnerabilities/" method="GET">
                 <div class = "barraPesquisa">
                     <span class = "imagemPesquisa"></span>
                     <input name="Projeto" class = "barraTexto" placeholder = "Pesquise por um projeto...">
@@ -76,7 +76,7 @@
                 <tbody class = "lines">
                     <tr>
                         <td>
-                            <a href="http://localhost:5000/overview_vulnerability/?id={{ linha[4] }}"> 
+                            <a href="/overview_vulnerability/?id={{ linha[4] }}"> 
                                 {{linha[0]}} 
                             </a>
                         </td>
