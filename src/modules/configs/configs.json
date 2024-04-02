@@ -3,13 +3,13 @@
     "diff_output": "/media/sda1/Projeto_Vulnerabilidades/VulnerabilidadesWork/output/diff_between_files",
 
     "projetos": [
+        "mozilla", 
         "apache", 
         "apache_cassandra", 
         "elastic", 
         "glibc", 
         "kernel", 
         "mongodb", 
-        "mozilla", 
         "mysql", 
         "neo4j",
         "postgresql", 

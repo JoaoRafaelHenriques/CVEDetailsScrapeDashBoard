@@ -72,3 +72,16 @@
     font-size: 1rem;
     font-weight: bold;
 }
+
+#popUp {
+    display: none; 
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.377);
+    border: 1px solid black;
+    color: #00adb5;
+    border-radius: 1rem;
+    padding: 10px;
+    z-index: 1;
+    width: auto;
+    height: auto;
+}

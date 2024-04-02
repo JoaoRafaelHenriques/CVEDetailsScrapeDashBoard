@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='style_tabelas.css') }}"/>
         <link rel="stylesheet" href="../static/style.css"/>
         <link rel="stylesheet" href="../static/style_tabelas.css"/>
+        <script src="{{ url_for('static', filename='utils.js') }}"></script>
     </head>
     <body>
         <nav class = "navbar">
@@ -39,7 +40,7 @@
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto" href='http://localhost:5000/resumeflask'>
+                    <a class = "texto" href='http://localhost:5000/resumeflask/?Projeto='>
                         Resumo Informação
                     </a>
                 </li>
@@ -54,6 +55,10 @@
                     <input class = "botaoPesquisa" type = "submit" value = "Pesquisa">
                 </div>
             </form>  
+        </div>
+
+        <div class = "allLine">
+            <span id="popUp"> TESTE </span> 
         </div>
 
         <div class = "tabelaResultados">
@@ -71,8 +76,12 @@
                     <tr>
                         <td> {{chave}} </td>
                         <td> {{valor[0]}} </td>
-                        <td> {{valor[1]}} </td>
-                        <td> {{valor[2]}} </td>
+                        <td class="popUpTD" onmouseover="popUp(this, '{{valor[1]}}')" onmouseout="hidePopUp()">
+                            {{valor[1]}} 
+                        </td>
+                        <td class="popUpTD" onmouseover="popUp(this, '{{valor[2]}}')" onmouseout="hidePopUp()">
+                            {{valor[2]}} 
+                        </td>
                     </tr>
                 </tbody>
                 {% endfor %}

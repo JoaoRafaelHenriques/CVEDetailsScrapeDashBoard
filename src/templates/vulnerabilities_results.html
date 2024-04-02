@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="../static/style.css"/>
         <link rel="stylesheet" href="../static/style_tabelas.css"/>
         <script src="{{ url_for('static', filename='pagging.js') }}"></script>
+        <script src="{{ url_for('static', filename='utils.js') }}"></script>
     </head>
     <body>
         <nav class = "navbar">
@@ -40,7 +41,7 @@
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto" href='http://localhost:5000/resumeflask'>
+                    <a class = "texto" href='http://localhost:5000/resumeflask/?Projeto='>
                         Resumo Informação
                     </a>
                 </li>
@@ -56,6 +57,10 @@
                 </div>
             </form>  
         </div>
+        
+        <div class = "allLine">
+            <span id="popUp"> TESTE </span> 
+        </div>
 
         <div class = "tabelaResultados">
             <table class = "tabela">
@@ -70,8 +75,14 @@
                 {% for linha in resultados %}
                 <tbody class = "lines">
                     <tr>
-                        <td><a href="http://localhost:5000/overview_vulnerability/?id={{ linha[4] }}"> {{linha[0]}} </a></td>
-                        <td> {{linha[1]}} </td>
+                        <td>
+                            <a href="http://localhost:5000/overview_vulnerability/?id={{ linha[4] }}"> 
+                                {{linha[0]}} 
+                            </a>
+                        </td>
+                        <td class="popUpTD" onmouseover="popUp(this, '{{linha[1]}}')" onmouseout="hidePopUp()">
+                            {{linha[1]}} 
+                        </td>
                         <td> {{linha[2]}} </td>
                         <td> {{linha[3]}} </td>
                     </tr>

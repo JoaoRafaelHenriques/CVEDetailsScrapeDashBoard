@@ -74,7 +74,6 @@ def calculo_diffs_diarios() -> dict:
     
     # Obtemos a data na forma YYYY-MM-DD
     data_hoje = date.today()
-    data_ontem = data_hoje - timedelta(days = 1)
     
     info = dict()
     
@@ -83,8 +82,9 @@ def calculo_diffs_diarios() -> dict:
         
         # Testamos se já existe informação de hoje
         caminho = os.path.join(INFO_SERVER.diff_output, f"{projeto}_{data_hoje}")
-        if not os.path.exists(caminho):
-            caminho = os.path.join(INFO_SERVER.diff_output, f"{projeto}_{data_ontem}")
+        while not os.path.exists(caminho):
+            data_hoje = data_hoje - timedelta(days = 1)
+            caminho = os.path.join(INFO_SERVER.diff_output, f"{projeto}_{data_hoje}")
         
         # Dicionario com a informação (atualizadas, desaparecidas, iguais, novas)
         info[projeto] = []
@@ -95,9 +95,7 @@ def calculo_diffs_diarios() -> dict:
                 caminho_tipo = os.path.join(caminho, tipo)
                 info[projeto].append(leitura_ficheiro(caminho_tipo))
     
-    if f"{projeto}_{data_hoje}" in caminho:
-        return info, data_hoje
-    return info, data_ontem
+    return info, data_hoje
 
 def obter_id_projeto(projeto: str) -> int:
     """Obtém o id do projeto através do seu nome.

@@ -79,11 +79,11 @@ class Base_de_Dados:
         Returns:
             int: id do projeto na base de dados
         """
-        if projeto is not None:
+        if projeto is None or projeto == "":
+            return -1
+        else:
             r_id = self.consulta(f"""SELECT R_ID FROM REPOSITORIES_SAMPLE WHERE PROJECT = '{projeto}';""")[0][0]
             return r_id
-        else:
-            return -1
         
         
         
