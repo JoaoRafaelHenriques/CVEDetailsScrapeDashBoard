@@ -16,18 +16,19 @@
         <link rel="stylesheet" href="../static/style_tabelas.css"/>
         <script src="{{ url_for('static', filename='pagging.js') }}"></script>
         <script src="{{ url_for('static', filename='utils.js') }}"></script>
+        <script src="{{ url_for('static', filename='filters.js') }}"></script>
     </head>
     <body>
         <nav class = "navbar">
             <ul class = "menu"> 
                 <li class = "botao">
                     <a class = "texto" href='/daily_update/'>
-                        Atualização Diária
+                        Daily Updates
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto" href="/overview_vulnerabilities/?Projeto=&Page=1">
-                        Vulnerabilidades
+                    <a class = "texto" href="/overview_vulnerabilities/?Projeto=&Categoria=&Missing=&Page=1">
+                        Vulnerabilities
                     </a>
                 </li>
                 <li class = "botao">
@@ -37,42 +38,72 @@
                 </li>
                 <li class = "botao">
                     <a class = "texto" href='/overview_cwes/'>
-                        Cwes
+                        CWEs
                     </a>
                 </li>
                 <li class = "botao">
                     <a class = "texto" href='/resumeflask/?Projeto='>
-                        Resumo Informação
+                        Dataset Summary
                     </a>
                 </li>
             </ul>
         </nav>
-
-        <div class = "espacoBarraPesquisa">
-            <form class = "formPesquisa" href="/overview_vulnerabilities/" method="GET">
-                <div class = "barraPesquisa">
-                    <span class = "imagemPesquisa"></span>
-                    <input name="Projeto" class = "barraTexto" placeholder = "Pesquise por um projeto...">
-                    <input class = "botaoPesquisa" type = "submit" value = "Pesquisa">
+        
+        <div class="filtros">
+            <div class="dropdown">
+                <div class="select">
+                    <span id="Projeto" class="selected"> All </span>
+                    <div class="caret"></div>
                 </div>
-            </form>  
+                <ul class="menuFilter">
+                    <li class="active"> All </li>
+                    {% for linha in resultados["FiltrosProjetos"] %}
+                    <li> {{ linha }} </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="dropdown">
+                <div class="select">
+                    <span id="Categoria" class="selected"> All </span>
+                    <div class="caret"></div>
+                </div>
+                <ul class="menuFilter">
+                    <li class="active"> All </li>
+                    {% for linha in resultados["FiltrosCategorias"] %}
+                    <li> {{ linha }} </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="dropdown">
+                <div class="select">
+                    <span id="Missing" class="selected"> Válido </span>
+                    <div class="caret"></div>
+                </div>
+                <ul class="menuFilter">
+                    <li class="active"> Válido </li>
+                    {% for linha in resultados["FiltrosMissing"] %}
+                    <li> {{ linha }} </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <input class = "botaoFiltro" type = "submit" onCLick="pesquisaFiltrada()" value = "Filtrar">
         </div>
         
         <div class = "allLine">
-            <span id="popUp"> TESTE </span> 
+            <span id="popUp"> </span> 
         </div>
 
         <div class = "tabelaResultados">
             <table class = "tabela">
                 <thead class = "headers">
                     <tr>
-                        <th class = "head"> Vulnerabilidade </th>
-                        <th class = "head"> Categoria </th>
-                        <th class = "head"> Projeto </th>
-                        <th class = "head"> Desaparecida </th>
+                        <th class = "head"> Vulnerabilities </th>
+                        <th class = "head"> Category </th>
+                        <th class = "head"> Project </th>
+                        <th class = "head"> Missing </th>
                     </tr>
                 </thead>
-                {% for linha in resultados %}
+                {% for linha in resultados["Resultados"] %}
                 <tbody class = "lines">
                     <tr>
                         <td>

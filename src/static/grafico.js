@@ -7,7 +7,7 @@ function getUrlParam(){
 }
 
 // Acontece sempre que a página carrega
-window.onload = function() {
+window.addEventListener("load",function() {
 
     // Obtemos o projeto
     queryString = getUrlParam();
@@ -94,4 +94,4 @@ window.onload = function() {
         // Lidamos com possíveis erros
         console.log(error);
     });
-};
+},false);

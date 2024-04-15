@@ -21,12 +21,12 @@
             <ul class = "menu"> 
                 <li class = "botao">
                     <a class = "texto" href='/daily_update/'>
-                        Atualização Diária
+                        Daily Updates
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto" href="/overview_vulnerabilities/?Projeto=&Page=1">
-                        Vulnerabilidades
+                    <a class = "texto" href="/overview_vulnerabilities/?Projeto=&Categoria=&Missing=&Page=1">
+                        Vulnerabilities
                     </a>
                 </li>
                 <li class = "botao">
@@ -36,29 +36,29 @@
                 </li>
                 <li class = "botao">
                     <a class = "texto" href='/overview_cwes/'>
-                        Cwes
+                        CWEs
                     </a>
                 </li>
                 <li class = "botao">
                     <a class = "texto" href='/resumeflask/?Projeto='>
-                        Resumo Informação
+                        Dataset Summary
                     </a>
                 </li>
             </ul>
         </nav>
 
-        <h1> Informação do dia {{ resultados["Data"][0] }}! </h1>
+        <h1> Information from {{ resultados["Data"][0] }}! </h1>
 
         <div class = "caixas">
             <div class = "caixa">
                 <table class = "tabela">
                     <thead class = "headers">
                         <tr>
-                            <th class = "head"> Projeto </th>
-                            <th class = "head"> Atualizadas </th>
-                            <th class = "head"> Desaparecidas </th>
-                            <th class = "head"> Iguais </th>
-                            <th class = "head"> Novas </th>
+                            <th class = "head"> Project </th>
+                            <th class = "head"> Updates </th>
+                            <th class = "head"> Disappearances </th>
+                            <th class = "head"> Equals </th>
+                            <th class = "head"> News </th>
                         </tr>
                     </thead>
                     {% for chave, valor in resultados["Info"].items() %}

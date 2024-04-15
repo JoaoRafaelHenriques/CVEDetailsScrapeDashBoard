@@ -22,22 +22,50 @@ def overview_vulnerabilities():
     
     # Obtemos a informação dos parâmetros
     projeto = request.args.get("Projeto")
+    if projeto == "All" or projeto == "":
+        projeto = ""
+    categoria = request.args.get("Categoria")
+    if categoria == "All" or categoria == "":
+        categoria = ""
+    missing = request.args.get("Missing")
+    if not missing or (missing == "Válido" or missing == ""):
+        missing = ""
     offset = request.args.get("Page")
     size = 15
     if offset is None:
         offset = 0
     else:
         offset = (int(offset) - 1) * size
+    print(projeto)
     resultados = consulta_base_de_dados(f"""SELECT PROJECT, CVE, V_CLASSIFICATION, MISSING, VULNERABILITIES.V_ID
                                         FROM VULNERABILITIES 
                                         LEFT JOIN REPOSITORIES_SAMPLE ON VULNERABILITIES.R_ID = REPOSITORIES_SAMPLE.R_ID
-                                        WHERE PROJECT = '{projeto}' OR '{projeto}' = ''
+                                        WHERE (PROJECT = '{projeto}' OR '{projeto}' = '')
+                                        AND (V_CLASSIFICATION LIKE '%{categoria}%' OR '{categoria}' = '')
+                                        AND (MISSING = "{missing}" OR "{missing}" = '')
                                         LIMIT {size}
                                         OFFSET {offset};""")
-    lista = list()
+
+    info = {"Resultados": [], "FiltrosProjetos": [], "FiltrosCategorias": [], "FiltrosMissing": []}
+    
+    infoProjetos = consulta_base_de_dados(f""" SELECT PROJECT FROM REPOSITORIES_SAMPLE;""")
+    infoCategorias = consulta_base_de_dados(f""" SELECT DISTINCT(V_CLASSIFICATION) FROM VULNERABILITIES;""")
+    infoMissing = consulta_base_de_dados(f""" SELECT DISTINCT(MISSING) FROM VULNERABILITIES;""")
+    
     for linha in resultados:
-        lista.append([linha[1], trata_categorias(linha[2]), linha[0], trata_missing(linha[3]), linha[4]])
-    return render_template("vulnerabilities_results.html", resultados=lista)
+        info["Resultados"].append([linha[1], trata_categorias(linha[2]), linha[0], trata_missing(linha[3]), linha[4]])
+    for linha in infoProjetos:
+        info["FiltrosProjetos"].append(linha[0])
+    for linha in infoMissing:
+        if linha[0] is None:
+            continue
+        info["FiltrosMissing"].append(linha[0])
+    for linha in infoCategorias:
+        help_ = trata_categorias(linha[0]).split(" | ")
+        for cat in help_:
+            if cat not in info["FiltrosCategorias"]:
+                info["FiltrosCategorias"].append(cat)
+    return render_template("vulnerabilities_results.html", resultados=info)
 
 @bp.route("/overview_patches/", methods =["GET"])
 def overview_patches():
@@ -52,6 +80,8 @@ def overview_patches():
     
     # Procuramos o projeto e a página a ser utilizados
     projeto = request.args.get("Projeto")
+    if projeto == "All" or projeto == "":
+        projeto = ""
     offset = request.args.get("Page")
     size = 15
     if offset is None:
@@ -66,10 +96,17 @@ def overview_patches():
                                         WHERE PROJECT = '{projeto}' OR '{projeto}' = ''
                                         LIMIT {size}
                                         OFFSET {offset};""")
-    lista = list()
+
+    info = {"Resultados": [], "FiltrosProjetos": []}
+    
+    infoProjetos = consulta_base_de_dados(f""" SELECT PROJECT FROM REPOSITORIES_SAMPLE;""")
+    
     for linha in resultados:
-        lista.append([linha[1], linha[0]])
-    return render_template("patches_results.html", resultados=lista)
+        info["Resultados"].append([linha[1], linha[0]])
+    for linha in infoProjetos:
+        info["FiltrosProjetos"].append(linha[0])
+        
+    return render_template("patches_results.html", resultados=info)
 
 @bp.route("/overview_cwes/", methods=["GET"])
 def overview_cwes():
@@ -84,32 +121,43 @@ def overview_cwes():
     """
     
     # Tentamos obter a cwe
+    categoria = request.args.get("Categoria")
+    if not categoria or categoria == "All" or categoria == "":
+        categoria = ""
     cwe = request.args.get("CWE")
     if cwe is None:
         cwe = ''
+    offset = request.args.get("Page")
+    size = 15
+    if offset is None:
+        offset = 0
+    else:
+        offset = (int(offset) - 1) * size
         
     # Procuramos a informação
-    cwes = consulta_base_de_dados(f"""SELECT V_CWE, DESCRIPTION, NAME 
+    cwes = consulta_base_de_dados(f"""SELECT CWE_INFO.V_CWE, CWE_INFO.DESCRIPTION, VULNERABILITY_CATEGORY.NAME , COALESCE(counter.count, 0) as "contagem"
                                      FROM CWE_INFO 
                                      LEFT JOIN VULNERABILITY_CATEGORY 
                                      ON VULNERABILITY_CATEGORY.ID_CATEGORY = CWE_INFO.ID_CATEGORY 
-                                     WHERE CWE_INFO.V_CWE = '{cwe}' OR '{cwe}' = '';""")
-    counter = consulta_base_de_dados(f"""SELECT V_CWE, COUNT(*) 
-                                     FROM VULNERABILITIES_CWE 
-                                     WHERE V_CWE = '{cwe}' OR '{cwe}' = '' 
-                                     GROUP BY V_CWE;""")
+                                     LEFT JOIN (SELECT V_CWE, COUNT(*) as count FROM VULNERABILITIES_CWE WHERE V_CWE = '{cwe}' OR '{cwe}' = '' GROUP BY V_CWE) AS counter ON CWE_INFO.V_CWE = counter.V_CWE
+                                     WHERE (CWE_INFO.V_CWE = '{cwe}' OR '{cwe}' = '' )
+                                     AND (VULNERABILITY_CATEGORY.NAME = "{categoria}" OR "{categoria}" = "")
+                                     ORDER BY contagem DESC
+                                     LIMIT {size}
+                                     OFFSET {offset};""")
     
-    # Construimos os resultados com o que obtivemos
-    dic: dict = {}
-    for linha in counter:
-        dic["CWE-" + linha[0]] = linha[1]
+    infoCategorias = consulta_base_de_dados(f"""SELECT DISTINCT(NAME) FROM VULNERABILITY_CATEGORY;""")
+    
+    dic: dict = {"CWES": {}, "FiltrosCategorias": []}
 
+    # Adicionamos CWE ao numero para uma melhor leitura
     for linha in cwes:
         chave = linha[0]
         if "CWE-" + chave not in dic.keys():
-            dic["CWE-" + chave] = [0, linha[1], linha[2]]
-        else:
-            dic["CWE-" + chave] = [dic["CWE-" + chave], linha[1], linha[2]]
+            dic["CWES"]["CWE-" + chave] = [linha[3], linha[1], linha[2]]
+    for linha in infoCategorias:
+        dic["FiltrosCategorias"].append(linha[0])
+
     return render_template("cwes_results.html", resultados = dic)
 
 @bp.route("/daily_update/")
@@ -147,16 +195,21 @@ def resumeflask():
     projetos = consulta_base_de_dados(f"""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE WHERE R_ID = {r_id} OR {r_id} = -1;""")
     
     # Construir a lista de resultados
-    dic: dict = {}
+    dic: dict = {"FiltrosProjetos": []}
     dic_auxiliar: dict = {}
 
-    dic_auxiliar["Vulnerabilidades"] = vulnerabilidades[0][0]
+    dic_auxiliar["Vulnerabilities"] = vulnerabilidades[0][0]
     dic_auxiliar["Patches"] = patches[0][0]
     dic_auxiliar["CWEs"] = cwes[0][0]
-    dic_auxiliar["Projetos"] = projetos[0][0]
+    dic_auxiliar["Projects"] = projetos[0][0]
     dic['resultados'] = dic_auxiliar
+    
+    infoProjetos = consulta_base_de_dados(f""" SELECT PROJECT FROM REPOSITORIES_SAMPLE;""")
+    
+    for linha in infoProjetos:
+        dic["FiltrosProjetos"].append(linha[0])
         
-    return render_template("resume.html", results=dic)
+    return render_template("resume.html", resultados=dic)
 
 @bp.route("/overview_vulnerability/", methods=["GET"])
 def overview_vulnerability():

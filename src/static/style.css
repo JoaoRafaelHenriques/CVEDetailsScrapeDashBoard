@@ -49,31 +49,37 @@ body {
     text-decoration-color: #00adb5;
 }
 
-.espacoBarraPesquisa {
-    padding: 2rem;
-}
-
 .formPesquisa {
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
-.barraPesquisa{
-    width: 19rem;
-    background-color: #303841;
-    padding: 0.3rem;
+.espacoBarraPesquisa {
+    display: flex;
+    justify-content: space-between;
+}
+
+.barraPesquisa {
+    background: #2a2f3b ;
+    height: 1.7em;
+    color: #00adb5;
     display: flex;
     justify-content: center;
-    border-radius: 10rem;
-}
+    align-items: center;
+    border: 2px #2a2f3b solid;
+    border-radius: 0.5em;
+    padding: 0.9em 0.3em 0.9em 0.3em;
+    cursor: pointer;
+    transition: background 0.3s;
+} 
 
 .barraTexto {
-    width: 65%;
     border-style: hidden;
-    padding: 1.15rem;
+    padding: 1em;
     background-color: #1e2329;
     color: #00adb5;
-    border-radius: 10rem;
+    border-radius: 0.5em;
 }
 
 .barraTexto:hover,
@@ -165,10 +171,119 @@ body {
 }
 
 h1 {
-    margin: 3rem;
+    margin: 1em;
     font-family: "Montserrat", sans-serif;
     color: #00adb5;
     display: flex;
     justify-content: center;
 }
 
+.filtros {
+    display: flex;
+    justify-content: center;
+}
+
+.dropdown {
+    min-width: 15em;
+    position: relative;
+    margin: 3em;
+}
+
+.dropdown * {
+    box-sizing: border-box;
+}
+
+.select {
+    background: #2a2f3b ;
+    color: #00adb5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px #2a2f3b solid;
+    border-radius: 0.5em;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.select-clicked {
+    border: 2px #000D16 solid;
+    box-shadow: 0 0 0.8em #00adb5;
+}
+
+.select:hover {
+    background: #323741;
+}
+
+.caret {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #fff;
+    transition: 0.3s;
+}
+
+.caret-rotate {
+    transform: rotate(180deg);
+}
+
+.menuFilter {
+    list-style: none;
+    padding: 0.2em 0.5em;
+    background: #323041;
+    border: 1px #363636;
+    box-shadow: 0 0.5em 1em rgba(0,0,0,0.2);
+    border-radius: 0.5em;
+    color: #9fafa9;
+    position: absolute;
+    top: 3em;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%);
+    opacity: 0;
+    display: none;
+    transition: 0.2s;
+    z-index: 1;
+}
+
+.menuFilter li {
+    padding: 0.7em 0.5em;
+    margin: 0.3em 0;
+    border-radius: 0.5em;
+    cursor: pointer;
+}
+
+.menuFilter li:hover {
+    background: #00adb5;
+}
+
+.menuFilter-open {
+    display: block;
+    opacity: 1;
+}
+
+.active {
+    background:#1e2329;
+}
+
+.botaoFiltro {
+    margin: 3.6em;
+    padding: 0;
+    border-radius: 0.5em;
+    min-width: 4rem;
+    cursor: pointer;
+    background: #323041;
+    border: 2px #2a2f3b solid;
+    color: #00adb5;
+}
+
+.botaoFiltro:hover {
+    background: #1e2329;
+}
+
+.espaçoFiltros {
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+}

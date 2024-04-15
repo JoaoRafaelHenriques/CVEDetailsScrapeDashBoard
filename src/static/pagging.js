@@ -1,12 +1,12 @@
 // Acontece sempre que a página carrega
-window.onload = function() {
+window.addEventListener("load",function() {
 
     // Obtemos o valor do parâmetro "Page" da URL
     let [url, search_params, page] = url_tratamento();
     
     // Atualizamos o texto do link com o valor do parâmetro "Page"
     document.getElementById("numero").textContent = page;
-};
+},false);
 
 function url_tratamento(){
     // Obtemos o url e o parametro da pagina e retornamos tudo
