@@ -18,31 +18,42 @@ def overview_vulnerabilities():
             Dentro do request.args temos:
                 Page (str): página
                 Projeto (str): projeto
+                Categoria (str): categorias
+                Missing (str): missing
     """
     
-    # Obtemos a informação dos parâmetros
-    projeto = request.args.get("Projeto")
-    if projeto == "All" or projeto == "":
-        projeto = ""
-    categoria = request.args.get("Categoria")
-    if categoria == "All" or categoria == "":
-        categoria = ""
-    missing = request.args.get("Missing")
-    if not missing or (missing == "Válido" or missing == ""):
-        missing = ""
+    # Obtemos a informação dos parâmetro e transformamos tudo em tuplos
+    projeto = request.args.get("Projeto").strip(" ").split(" & ")
+    projeto.append(" ")
+    if not projeto or "All" in projeto or "" in projeto:
+        projeto = tuple(["", ""])
+    else:
+        projeto = tuple(projeto)
+    categoria = request.args.get("Categoria").strip(" ").split(" & ")
+    categoria.append(" ")
+    if not categoria or "All" in categoria or "" in categoria:
+        categoria = tuple(["", ""])
+    else:
+        categoria = tuple(categoria)
+    missing = request.args.get("Missing").strip(" ").split(" & ")
+    missing.append(" ")
+    if not missing or "Valid" in missing or "" in missing:
+        missing = tuple(["", ""])
+    else:
+        missing = tuple(missing)
     offset = request.args.get("Page")
     size = 15
     if offset is None:
         offset = 0
     else:
         offset = (int(offset) - 1) * size
-    print(projeto)
+
     resultados = consulta_base_de_dados(f"""SELECT PROJECT, CVE, V_CLASSIFICATION, MISSING, VULNERABILITIES.V_ID
                                         FROM VULNERABILITIES 
                                         LEFT JOIN REPOSITORIES_SAMPLE ON VULNERABILITIES.R_ID = REPOSITORIES_SAMPLE.R_ID
-                                        WHERE (PROJECT = '{projeto}' OR '{projeto}' = '')
-                                        AND (V_CLASSIFICATION LIKE '%{categoria}%' OR '{categoria}' = '')
-                                        AND (MISSING = "{missing}" OR "{missing}" = '')
+                                        WHERE (PROJECT IN {projeto} OR "{projeto}" = "('', '')")
+                                        AND (V_CLASSIFICATION IN {categoria} OR "{categoria}" = "('', '')")
+                                        AND (MISSING IN {missing} OR "{missing}" = "('', '')")
                                         LIMIT {size}
                                         OFFSET {offset};""")
 

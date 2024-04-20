@@ -3,3 +3,6 @@ log/
 output/
 
 __pycache__/
+
+# Because this file is personal for each computer
+*configs.json

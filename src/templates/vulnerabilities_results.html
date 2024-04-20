@@ -27,7 +27,7 @@
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto" href="/overview_vulnerabilities/?Projeto=&Categoria=&Missing=&Page=1">
+                    <a class = "texto" href="/overview_vulnerabilities/?Projeto=+All+&Categoria=+All+&Missing=+Válido+&Page=1">
                         Vulnerabilities
                     </a>
                 </li>
@@ -50,9 +50,9 @@
         </nav>
         
         <div class="filtros">
-            <div class="dropdown">
+            <div id="Projeto" class="dropdown">
                 <div class="select">
-                    <span id="Projeto" class="selected"> All </span>
+                    <span class="selected"> All </span>
                     <div class="caret"></div>
                 </div>
                 <ul class="menuFilter">
@@ -62,9 +62,9 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="dropdown">
+            <div id="Categoria" class="dropdown">
                 <div class="select">
-                    <span id="Categoria" class="selected"> All </span>
+                    <span class="selected"> All </span>
                     <div class="caret"></div>
                 </div>
                 <ul class="menuFilter">
@@ -74,13 +74,13 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="dropdown">
+            <div id="Missing" class="dropdown">
                 <div class="select">
-                    <span id="Missing" class="selected"> Válido </span>
+                    <span class="selected"> Valid </span>
                     <div class="caret"></div>
                 </div>
                 <ul class="menuFilter">
-                    <li class="active"> Válido </li>
+                    <li class="active"> Valid </li>
                     {% for linha in resultados["FiltrosMissing"] %}
                     <li> {{ linha }} </li>
                     {% endfor %}
