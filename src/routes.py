@@ -131,13 +131,17 @@ def overview_cwes():
         Args:
             Dentro do request.args temos:
                 CWE (str): cwe pesquisada
+                Categoria (str): categorias a pesquisar
 
     """
     
     # Tentamos obter a cwe
-    categoria = request.args.get("Categoria")
-    if not categoria or categoria == "All" or categoria == "":
-        categoria = ""
+    categoria = request.args.get("Categoria").strip(" ").split(" & ")
+    categoria.append(" ")
+    if not categoria or "All" in categoria or "" in categoria:
+        categoria = tuple(["", ""])
+    else:
+        categoria = tuple(categoria)
     cwe = request.args.get("CWE")
     if cwe is None:
         cwe = ''
@@ -155,7 +159,7 @@ def overview_cwes():
                                      ON VULNERABILITY_CATEGORY.ID_CATEGORY = CWE_INFO.ID_CATEGORY 
                                      LEFT JOIN (SELECT V_CWE, COUNT(*) as count FROM VULNERABILITIES_CWE WHERE V_CWE = '{cwe}' OR '{cwe}' = '' GROUP BY V_CWE) AS counter ON CWE_INFO.V_CWE = counter.V_CWE
                                      WHERE (CWE_INFO.V_CWE = '{cwe}' OR '{cwe}' = '' )
-                                     AND (VULNERABILITY_CATEGORY.NAME = "{categoria}" OR "{categoria}" = "")
+                                     AND (VULNERABILITY_CATEGORY.NAME IN {categoria} OR "{categoria}" = "('', '')")
                                      ORDER BY contagem DESC
                                      LIMIT {size}
                                      OFFSET {offset};""")
