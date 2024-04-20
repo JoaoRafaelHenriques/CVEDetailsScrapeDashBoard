@@ -6,11 +6,6 @@ import os
 INFO_SERVER: configs.Server = None
 INFO_BASE_DE_DADOS = None
 
-def testa_categoria(a,b):
-    print(a)
-    print(b)
-    return True
-
 def trata_info_vulnerabidade(dic: dict) -> dict:
     """Retira todos os Nones do dicionário para uma melhor apresentação.
 
@@ -39,7 +34,7 @@ def trata_missing(valor: str) -> str:
         str: novo valor
     """
     if valor is None:
-        return "Válido"
+        return "Valid"
     return valor
 
 def trata_categorias(categorias: str) -> str:
@@ -92,13 +87,13 @@ def calculo_diffs_diarios() -> dict:
             caminho = os.path.join(INFO_SERVER.diff_output, f"{projeto}_{data_hoje}")
         
         # Dicionario com a informação (atualizadas, desaparecidas, iguais, novas)
-        info[projeto] = []
+        info[projeto.title().replace("_", " ")] = []
         for tipo in sorted(os.listdir(caminho)):
             
             # Queremos ignorar qualquer coisa que não seja os diffs
             if projeto in tipo:
                 caminho_tipo = os.path.join(caminho, tipo)
-                info[projeto].append(leitura_ficheiro(caminho_tipo))
+                info[projeto.title().replace("_", " ")].append(leitura_ficheiro(caminho_tipo))
     
     return info, data_hoje
 

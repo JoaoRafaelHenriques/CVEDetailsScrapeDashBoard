@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from modules.utils import calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade, obter_id_projeto, testa_categoria
+from modules.utils import calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade, obter_id_projeto
 
 bp = Blueprint("pages", __name__)
 
@@ -52,7 +52,6 @@ def overview_vulnerabilities():
     else:
         offset = (int(offset) - 1) * size
 
-    print(where_clause)
     resultados = consulta_base_de_dados(f"""SELECT PROJECT, CVE, V_CLASSIFICATION, MISSING, VULNERABILITIES.V_ID
                                         FROM VULNERABILITIES 
                                         LEFT JOIN REPOSITORIES_SAMPLE ON VULNERABILITIES.R_ID = REPOSITORIES_SAMPLE.R_ID
@@ -112,12 +111,11 @@ def overview_patches():
     resultados = consulta_base_de_dados(f"""SELECT DISTINCT(P_COMMIT), PROJECT
                                         FROM PATCHES 
                                         LEFT JOIN REPOSITORIES_SAMPLE ON PATCHES.R_ID = REPOSITORIES_SAMPLE.R_ID
-                                        WHERE PROJECT IN {projeto} OR "{projeto}" = "('', '')"
-                                        LIMIT {size}
-                                        OFFSET {offset};""")
+                                        WHERE PROJECT IN {projeto} OR "{projeto}" = "('', '')";
+                                        """)
 
-    info = {"Resultados": [], "FiltrosProjetos": []}
-    
+    info = {"Resultados": [], "FiltrosProjetos": [], "ValoresPatches": [f"{offset + 1} to {offset + size}", len(resultados)]}
+    resultados = resultados[offset : offset + size]
     infoProjetos = consulta_base_de_dados(f""" SELECT PROJECT FROM REPOSITORIES_SAMPLE;""")
     
     for linha in resultados:
@@ -165,13 +163,12 @@ def overview_cwes():
                                      LEFT JOIN (SELECT V_CWE, COUNT(*) as count FROM VULNERABILITIES_CWE WHERE V_CWE = '{cwe}' OR '{cwe}' = '' GROUP BY V_CWE) AS counter ON CWE_INFO.V_CWE = counter.V_CWE
                                      WHERE (CWE_INFO.V_CWE = '{cwe}' OR '{cwe}' = '' )
                                      AND (VULNERABILITY_CATEGORY.NAME IN {categoria} OR "{categoria}" = "('', '')")
-                                     ORDER BY contagem DESC
-                                     LIMIT {size}
-                                     OFFSET {offset};""")
+                                     ORDER BY contagem DESC;
+                                     """)
     
+    dic: dict = {"CWES": {}, "FiltrosCategorias": [], "ValoresCWE": [f"{offset + 1} to {offset + size}", len(cwes)]}
+    cwes = cwes[offset : offset + size]
     infoCategorias = consulta_base_de_dados(f"""SELECT DISTINCT(NAME) FROM VULNERABILITY_CATEGORY;""")
-    
-    dic: dict = {"CWES": {}, "FiltrosCategorias": []}
 
     # Adicionamos CWE ao numero para uma melhor leitura
     for linha in cwes:

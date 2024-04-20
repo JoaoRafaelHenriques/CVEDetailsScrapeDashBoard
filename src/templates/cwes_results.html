@@ -83,7 +83,7 @@
                 <thead class = "headers">
                     <tr>
                         <th class = "head"> CWE </th>
-                        <th class = "head"> Number of Linked Vulnerabilities </th>
+                        <th class = "head"> Linked Vulnerabilities </th>
                         <th class = "head"> Description </th>
                         <th class = "head"> Category </th>
                     </tr>
@@ -103,6 +103,12 @@
                 </tbody>
                 {% endfor %}
             </table>
+        </div>
+
+        <div class="numVulnerabilidades">
+            <div class="localTexto">
+                <span class="texto vulnerabilidadesValores"> {{resultados["ValoresCWE"][0]}} of {{resultados["ValoresCWE"][1]}} </span>
+            </div>
         </div>
 
         <div class="blocoSetas">
