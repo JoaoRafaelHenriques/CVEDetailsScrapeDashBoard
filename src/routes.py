@@ -90,9 +90,12 @@ def overview_patches():
     """
     
     # Procuramos o projeto e a página a ser utilizados
-    projeto = request.args.get("Projeto")
-    if projeto == "All" or projeto == "":
-        projeto = ""
+    projeto = request.args.get("Projeto").strip(" ").split(" & ")
+    projeto.append(" ")
+    if not projeto or "All" in projeto or "" in projeto:
+        projeto = tuple(["", ""])
+    else:
+        projeto = tuple(projeto)
     offset = request.args.get("Page")
     size = 15
     if offset is None:
@@ -104,7 +107,7 @@ def overview_patches():
     resultados = consulta_base_de_dados(f"""SELECT DISTINCT(P_COMMIT), PROJECT
                                         FROM PATCHES 
                                         LEFT JOIN REPOSITORIES_SAMPLE ON PATCHES.R_ID = REPOSITORIES_SAMPLE.R_ID
-                                        WHERE PROJECT = '{projeto}' OR '{projeto}' = ''
+                                        WHERE PROJECT IN {projeto} OR "{projeto}" = "('', '')"
                                         LIMIT {size}
                                         OFFSET {offset};""")
 
