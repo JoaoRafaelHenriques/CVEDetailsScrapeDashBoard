@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from modules.utils import calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade, obter_id_projeto
+from modules.utils import calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade, obter_id_projeto, testa_categoria
 
 bp = Blueprint("pages", __name__)
 
@@ -30,11 +30,15 @@ def overview_vulnerabilities():
     else:
         projeto = tuple(projeto)
     categoria = request.args.get("Categoria").strip(" ").split(" & ")
-    categoria.append(" ")
     if not categoria or "All" in categoria or "" in categoria:
         categoria = tuple(["", ""])
+        where_clause = ""
     else:
         categoria = tuple(categoria)
+        
+        # Contruímos uma condição para puder comparar todos os valores que nos foram passados
+        where_clause = " OR " + " OR ".join([f"V_CLASSIFICATION LIKE '%{word}%'" for word in categoria])
+        
     missing = request.args.get("Missing").strip(" ").split(" & ")
     missing.append(" ")
     if not missing or "Valid" in missing or "" in missing:
@@ -48,22 +52,17 @@ def overview_vulnerabilities():
     else:
         offset = (int(offset) - 1) * size
 
+    print(where_clause)
     resultados = consulta_base_de_dados(f"""SELECT PROJECT, CVE, V_CLASSIFICATION, MISSING, VULNERABILITIES.V_ID
                                         FROM VULNERABILITIES 
                                         LEFT JOIN REPOSITORIES_SAMPLE ON VULNERABILITIES.R_ID = REPOSITORIES_SAMPLE.R_ID
                                         WHERE (PROJECT IN {projeto} OR "{projeto}" = "('', '')")
-                                        AND (V_CLASSIFICATION IN {categoria} OR "{categoria}" = "('', '')")
-                                        AND (MISSING IN {missing} OR "{missing}" = "('', '')")
-                                        LIMIT {size}
-                                        OFFSET {offset};""")
-    total = consulta_base_de_dados(f"""SELECT COUNT(*)
-                                        FROM VULNERABILITIES 
-                                        LEFT JOIN REPOSITORIES_SAMPLE ON VULNERABILITIES.R_ID = REPOSITORIES_SAMPLE.R_ID
-                                        WHERE (PROJECT IN {projeto} OR "{projeto}" = "('', '')")
-                                        AND (V_CLASSIFICATION IN {categoria} OR "{categoria}" = "('', '')")
-                                        AND (MISSING IN {missing} OR "{missing}" = "('', '')");""")
+                                        AND ("{categoria}" = "('', '')" {where_clause})
+                                        AND (MISSING IN {missing} OR "{missing}" = "('', '')");
+                                        """)
 
-    info = {"Resultados": [], "FiltrosProjetos": [], "FiltrosCategorias": [], "FiltrosMissing": [], "ValoresVulnerabilidade": [f"{offset + 1} to {offset + size}", total[0][0]]}
+    info = {"Resultados": [], "FiltrosProjetos": [], "FiltrosCategorias": [], "FiltrosMissing": [], "ValoresVulnerabilidade": [f"{offset + 1} to {offset + size}", len(resultados)]}
+    resultados = resultados[offset : offset + size]
     
     infoProjetos = consulta_base_de_dados(f""" SELECT PROJECT FROM REPOSITORIES_SAMPLE;""")
     infoCategorias = consulta_base_de_dados(f""" SELECT DISTINCT(V_CLASSIFICATION) FROM VULNERABILITIES;""")
@@ -80,8 +79,8 @@ def overview_vulnerabilities():
     for linha in infoCategorias:
         help_ = trata_categorias(linha[0]).split(" | ")
         for cat in help_:
-            if cat not in info["FiltrosCategorias"]:
-                info["FiltrosCategorias"].append(cat)
+            if cat.title() not in info["FiltrosCategorias"]:
+                info["FiltrosCategorias"].append(cat.title())
     return render_template("vulnerabilities_results.html", resultados=info)
 
 @bp.route("/overview_patches/", methods =["GET"])
@@ -222,7 +221,7 @@ def resumeflask():
         lista_r_id = tuple(lista_r_id)
     
     # Obter os valores
-    vulnerabilidades = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES WHERE R_ID IN {lista_r_id} OR "{lista_r_id}" = "('', '')";""")
+    vulnerabilidades = consulta_base_de_dados(f"""SELECT COUNT(*) FROM VULNERABILITIES WHERE R_ID IN {lista_r_id} OR "{lista_r_id}" = "('', '')";""")
     patches = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(P_COMMIT)) FROM PATCHES WHERE R_ID IN {lista_r_id} OR "{lista_r_id}" = "('', '')";""")
     cwes = consulta_base_de_dados(f"""SELECT COUNT(*) FROM CWE_INFO WHERE V_CWE IN (SELECT V_CWE FROM VULNERABILITIES_CWE WHERE V_ID IN (SELECT V_ID FROM VULNERABILITIES WHERE R_ID IN {lista_r_id})) OR "{lista_r_id}" = "('', '')";""")
     projetos = consulta_base_de_dados(f"""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE WHERE R_ID IN {lista_r_id} OR "{lista_r_id}" = "('', '')";""")

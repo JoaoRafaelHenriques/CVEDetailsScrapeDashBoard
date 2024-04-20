@@ -6,6 +6,11 @@ import os
 INFO_SERVER: configs.Server = None
 INFO_BASE_DE_DADOS = None
 
+def testa_categoria(a,b):
+    print(a)
+    print(b)
+    return True
+
 def trata_info_vulnerabidade(dic: dict) -> dict:
     """Retira todos os Nones do dicionário para uma melhor apresentação.
 
