@@ -11,6 +11,7 @@ window.addEventListener("load",function() {
 
     // Obtemos o projeto
     queryString = getUrlParam();
+    console.log(queryString);
 
     // Pedimos os dados ao flask com o parâmetro
     fetch('/grafico/?Projeto=' + queryString)

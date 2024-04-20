@@ -203,14 +203,23 @@ def resumeflask():
     """
     
     # Tentamos identificar o projeto, se não conseguirmos usamos todos
-    projeto = request.args.get("Projeto")
-    r_id = obter_id_projeto(projeto)
-            
+    projeto = request.args.get("Projeto").strip(" ").split(" & ")
+    projeto.append(" ")
+    if not projeto or "All" in projeto or "" in projeto:
+        lista_r_id = tuple(["", ""])
+    else:
+        projeto = tuple(projeto)
+        
+        lista_r_id = []
+        for projeto_nome in projeto:
+            lista_r_id.append(obter_id_projeto(projeto_nome))
+        lista_r_id = tuple(lista_r_id)
+    
     # Obter os valores
-    vulnerabilidades = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES WHERE R_ID = {r_id} OR {r_id} = -1;""")
-    patches = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(P_COMMIT)) FROM PATCHES WHERE R_ID = {r_id} OR {r_id} = -1;""")
-    cwes = consulta_base_de_dados(f"""SELECT COUNT(*) FROM CWE_INFO WHERE V_CWE IN (SELECT V_CWE FROM VULNERABILITIES_CWE WHERE V_ID IN (SELECT V_ID FROM VULNERABILITIES WHERE R_ID = {r_id})) OR {r_id} = -1;""")
-    projetos = consulta_base_de_dados(f"""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE WHERE R_ID = {r_id} OR {r_id} = -1;""")
+    vulnerabilidades = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES WHERE R_ID IN {lista_r_id} OR "{lista_r_id}" = "('', '')";""")
+    patches = consulta_base_de_dados(f"""SELECT COUNT(DISTINCT(P_COMMIT)) FROM PATCHES WHERE R_ID IN {lista_r_id} OR "{lista_r_id}" = "('', '')";""")
+    cwes = consulta_base_de_dados(f"""SELECT COUNT(*) FROM CWE_INFO WHERE V_CWE IN (SELECT V_CWE FROM VULNERABILITIES_CWE WHERE V_ID IN (SELECT V_ID FROM VULNERABILITIES WHERE R_ID IN {lista_r_id})) OR "{lista_r_id}" = "('', '')";""")
+    projetos = consulta_base_de_dados(f"""SELECT COUNT(*) FROM REPOSITORIES_SAMPLE WHERE R_ID IN {lista_r_id} OR "{lista_r_id}" = "('', '')";""")
     
     # Construir a lista de resultados
     dic: dict = {"FiltrosProjetos": []}
@@ -282,8 +291,17 @@ def grafico():
     """
     
     # Obtemos a informação de um projeto
-    projeto = request.args.get("Projeto")
-    r_id = obter_id_projeto(projeto)
+    projeto = request.args.get("Projeto").strip(" ").split(" & ")
+    projeto.append(" ")
+    if not projeto or "All" in projeto or "" in projeto:
+        lista_r_id = tuple(["", ""])
+    else:
+        projeto = tuple(projeto)
+        
+        lista_r_id = []
+        for projeto_nome in projeto:
+            lista_r_id.append(obter_id_projeto(projeto_nome))
+        lista_r_id = tuple(lista_r_id)
             
     dic: dict = {"Data": [], "Titulos": []}
     
@@ -292,7 +310,7 @@ def grafico():
                                          FROM VULNERABILITIES_CWE 
                                          LEFT JOIN VULNERABILITIES 
                                          ON VULNERABILITIES.V_ID = VULNERABILITIES_CWE.V_ID
-                                         WHERE R_ID = {r_id} OR {r_id} = -1
+                                         WHERE R_ID IN {lista_r_id} OR "{lista_r_id}" = "('', '')"
                                          GROUP BY VULNERABILITIES_CWE.V_CWE ORDER BY COUNT(*) DESC LIMIT 5;""");
     for cwe in cwes_comuns:
         dic["Titulos"].append([f'CWE-{str(cwe[0])}'])
@@ -302,7 +320,7 @@ def grafico():
         info = consulta_base_de_dados(f"""SELECT CVE, V_CWE 
                                       FROM VULNERABILITIES 
                                       INNER JOIN VULNERABILITIES_CWE ON VULNERABILITIES_CWE.V_ID = VULNERABILITIES.V_ID 
-                                      WHERE VULNERABILITIES_CWE.V_CWE = {cwe[0][4:]} AND (R_ID = {r_id} OR {r_id} = -1);""")
+                                      WHERE VULNERABILITIES_CWE.V_CWE = {cwe[0][4:]} AND (R_ID IN {lista_r_id} OR "{lista_r_id}" = "('', '')");""")
         info_tratada: dict = {
             '1999': 0, '2000': 0, '2001': 0, '2002': 0, '2003': 0, '2004': 0, '2005': 0, 
             '2006': 0, '2007': 0, '2008': 0, '2009': 0, '2010': 0, '2011': 0, '2012': 0,
