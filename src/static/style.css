@@ -287,3 +287,17 @@ h1 {
     justify-content: center;
     justify-items: center;
 }
+
+.numVulnerabilidades {
+    display: flex;
+    justify-content: right;
+}
+
+.localTexto {
+    padding-right: 5em;
+}
+
+.vulnerabilidadesValores {
+    font-size: 0.8em;
+    text-decoration: none;
+}

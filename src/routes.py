@@ -56,8 +56,14 @@ def overview_vulnerabilities():
                                         AND (MISSING IN {missing} OR "{missing}" = "('', '')")
                                         LIMIT {size}
                                         OFFSET {offset};""")
+    total = consulta_base_de_dados(f"""SELECT COUNT(*)
+                                        FROM VULNERABILITIES 
+                                        LEFT JOIN REPOSITORIES_SAMPLE ON VULNERABILITIES.R_ID = REPOSITORIES_SAMPLE.R_ID
+                                        WHERE (PROJECT IN {projeto} OR "{projeto}" = "('', '')")
+                                        AND (V_CLASSIFICATION IN {categoria} OR "{categoria}" = "('', '')")
+                                        AND (MISSING IN {missing} OR "{missing}" = "('', '')");""")
 
-    info = {"Resultados": [], "FiltrosProjetos": [], "FiltrosCategorias": [], "FiltrosMissing": []}
+    info = {"Resultados": [], "FiltrosProjetos": [], "FiltrosCategorias": [], "FiltrosMissing": [], "ValoresVulnerabilidade": [f"{offset + 1} to {offset + size}", total[0][0]]}
     
     infoProjetos = consulta_base_de_dados(f""" SELECT PROJECT FROM REPOSITORIES_SAMPLE;""")
     infoCategorias = consulta_base_de_dados(f""" SELECT DISTINCT(V_CLASSIFICATION) FROM VULNERABILITIES;""")
