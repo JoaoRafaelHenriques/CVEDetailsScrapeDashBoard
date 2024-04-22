@@ -1,3 +1,12 @@
+function atualizaGrafico(event){
+    event.preventDefault();
+    let valores = document.querySelector(".barraTexto").value;
+    let cwes = valores.trim().split(" ");
+    cwes = cwes.filter(cwe => cwe !== "" && cwe !== " ");
+    if (cwes.length > 5) cwes = cwes.slice(0,5);
+    grafico(cwes); 
+} 
+
 function getUrlParam(){
     // Obtemos o URL
     let queryString = window.location.search;
@@ -8,13 +17,30 @@ function getUrlParam(){
 
 // Acontece sempre que a página carrega
 window.addEventListener("load",function() {
+    grafico()
+},false);
 
+let graficoChart = null;
+
+function grafico(cwes){
+
+    if (graficoChart) {
+        graficoChart.destroy();
+    }
+    
     // Obtemos o projeto
     queryString = getUrlParam();
-    console.log(queryString);
+    
+    // Construimos o URL
+    let url = '/grafico/?Projeto=' + queryString;
+
+    // Vemos se há filtros
+    if (cwes) {
+        url = url + '&CWES=' + cwes;
+    }
 
     // Pedimos os dados ao flask com o parâmetro
-    fetch('/grafico/?Projeto=' + queryString)
+    fetch(url)
     .then(response => {
 
         // Verificamos se tudo está correto
@@ -26,58 +52,26 @@ window.addEventListener("load",function() {
     })
     .then(data => {
 
-        // {"Data": {Ano: num}, "Titulos": [[],[],[]]}
-        // Colocamos todos os Y sabendo que o X é igual para todos
-        let X1 = Object.keys(data.Data[0]);
-        let Y1 = Object.values(data.Data[0]);
-        let Y2 = Object.values(data.Data[1]);
-        let Y3 = Object.values(data.Data[2]);
-        let Y4 = Object.values(data.Data[3]);
-        let Y5 = Object.values(data.Data[4]);
+        // {"Data": {Ano: num, Ano: num, Ano: num, etc}, "Titulos": [[],[],[]]}
+        let anos = Object.keys(data.Data[0]);
         
         // Onde queremos colocar o gráfico no HTML
         let ctx = document.getElementById('myChart');
 
-        // COntruímos o gráfico
-        new Chart(ctx, {
+        let datasets = data.Titulos.map((titulo, index) => ({
+            label: titulo,
+            data: Object.values(data.Data[index]),
+            borderWidth: 1,
+            backgroundColor: `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 1)`,
+            borderColor: `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`
+        }));
+
+        // Contruímos o gráfico
+        graficoChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: X1,
-                datasets: [{
-                        label: data.Titulos[0],
-                        data: Y1,
-                        borderWidth: 1,
-                        backgroundColor: 'rgba(255,0,0,1)',
-                        borderColor: 'rgba(255,0,0,0.5)'
-                    },
-                    {
-                        label: data.Titulos[1],
-                        data: Y2,
-                        borderWidth: 1,
-                        backgroundColor: 'rgba(0,255,0,1)',
-                        borderColor: 'rgba(0,255,0,0.5)'
-                    },
-                    {
-                        label: data.Titulos[2],
-                        data: Y3,
-                        borderWidth: 1,
-                        backgroundColor: 'rgba(0,255,255,1)',
-                        borderColor: 'rgba(0,255,255,0.5)'
-                    },
-                    {
-                        label: data.Titulos[3],
-                        data: Y4,
-                        borderWidth: 1,
-                        backgroundColor: 'rgba(255,255,0,1)',
-                        borderColor: 'rgba(255,255,0,0.5)'
-                    },
-                    {
-                        label: data.Titulos[4],
-                        data: Y5,
-                        borderWidth: 1,
-                        backgroundColor: 'rgba(255,0,255,1)',
-                        borderColor: 'rgba(255,0,255,0.5)'
-                    }]
+                labels: anos,
+                datasets: datasets
             },
             options: {
                 layout: {
@@ -95,4 +89,4 @@ window.addEventListener("load",function() {
         // Lidamos com possíveis erros
         console.log(error);
     });
-},false);
+} 

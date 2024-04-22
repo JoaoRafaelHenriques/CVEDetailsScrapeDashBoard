@@ -186,7 +186,7 @@ h1 {
 .dropdown {
     min-width: 15em;
     position: relative;
-    margin: 3em;
+    margin: 1em 3em 3em 3em;
 }
 
 .dropdown * {
@@ -245,6 +245,9 @@ h1 {
     display: none;
     transition: 0.2s;
     z-index: 1;
+    max-height: 20em;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .menuFilter li {
@@ -263,15 +266,32 @@ h1 {
     opacity: 1;
 }
 
+.menuFilter::-webkit-scrollbar {
+    width: 12px; /* largura da barra de rolagem */
+}
+
+.menuFilter::-webkit-scrollbar-track {
+    background: #f1f1f100; /* cor de fundo da track */
+}
+
+.menuFilter::-webkit-scrollbar-thumb {
+    background: #00adb5; /* cor do thumb (barra) */
+    border-radius: 6px; /* arredondamento do thumb */
+}
+
+.menuFilter::-webkit-scrollbar-thumb:hover {
+    background: #555; /* cor do thumb ao passar o mouse */
+}
+
 .active {
     background:#1e2329;
 }
 
 .botaoFiltro {
-    margin: 3.6em;
+    margin: 2em 3em 2.8em 3em;
     padding: 0;
     border-radius: 0.5em;
-    min-width: 4rem;
+    min-width: 8rem;
     cursor: pointer;
     background: #323041;
     border: 2px #2a2f3b solid;
@@ -285,7 +305,7 @@ h1 {
 .espaçoFiltros {
     display: flex;
     justify-content: center;
-    justify-items: center;
+    align-items: center;
 }
 
 .numVulnerabilidades {
@@ -300,4 +320,11 @@ h1 {
 .vulnerabilidadesValores {
     font-size: 0.8em;
     text-decoration: none;
+}
+
+.textoFiltro {
+    font-size: 1em;
+    text-decoration: none;
+    font-weight: bold;
+
 }

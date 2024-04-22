@@ -287,6 +287,7 @@ def grafico():
         Args:
             Dentro do request.args temos:
                 Projeto (str): projeto usado na pesquisa
+                Cwes (str): cwes pedidas (opcional)
         Returns:
             Passamos em JSON:
                 dic (dic|JSON): dicionário com todas as cwes mais comuns e a sua contagem por ano
@@ -307,15 +308,21 @@ def grafico():
             
     dic: dict = {"Data": [], "Titulos": []}
     
-    # Escolher as 5 mais comuns
-    cwes_comuns = consulta_base_de_dados(f"""SELECT V_CWE, COUNT(*) 
-                                         FROM VULNERABILITIES_CWE 
-                                         LEFT JOIN VULNERABILITIES 
-                                         ON VULNERABILITIES.V_ID = VULNERABILITIES_CWE.V_ID
-                                         WHERE R_ID IN {lista_r_id} OR "{lista_r_id}" = "('', '')"
-                                         GROUP BY VULNERABILITIES_CWE.V_CWE ORDER BY COUNT(*) DESC LIMIT 5;""");
-    for cwe in cwes_comuns:
-        dic["Titulos"].append([f'CWE-{str(cwe[0])}'])
+    cwes_filtros = request.args.get("CWES")
+    if not cwes_filtros:
+        # Escolher as 5 mais comuns
+        cwes_comuns = consulta_base_de_dados(f"""SELECT V_CWE, COUNT(*) 
+                                            FROM VULNERABILITIES_CWE 
+                                            LEFT JOIN VULNERABILITIES 
+                                            ON VULNERABILITIES.V_ID = VULNERABILITIES_CWE.V_ID
+                                            WHERE R_ID IN {lista_r_id} OR "{lista_r_id}" = "('', '')"
+                                            GROUP BY VULNERABILITIES_CWE.V_CWE ORDER BY COUNT(*) DESC LIMIT 5;""");
+        for cwe in cwes_comuns:
+            dic["Titulos"].append([f'CWE-{str(cwe[0])}'])
+    
+    else:
+        for cwe in cwes_filtros.split(","):
+            dic["Titulos"].append([f'CWE-{str(cwe)}'])
         
     # Fazer a contagem para cada ano
     for cwe in dic["Titulos"]:

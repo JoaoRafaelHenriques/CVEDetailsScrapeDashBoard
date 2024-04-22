@@ -54,6 +54,7 @@
 
         <div class="filtros">
             <div id="Projeto" class="dropdown">
+                <span class="texto textoFiltro"> Project: </span>
                 <div class="select">
                     <span class="selected"> All </span>
                     <div class="caret"></div>
@@ -89,6 +90,14 @@
 
         <div class="ChartTitle">
             <h1> Most Common CWEs </h1>
+
+            <form class = "formPesquisa" href="overview_cwes/" method="GET">
+                <div class = "barraPesquisa">
+                    <input name="CWE" class = "barraTexto" placeholder = "Search for a CWE number...">
+                </div>
+                <input class = "botaoFiltro" type = "" onCLick="atualizaGrafico(event)" value = "Filtrar">
+            </form>  
+
             <div class="myChartDiv">
                 <canvas id="myChart"></canvas>
             </div>
