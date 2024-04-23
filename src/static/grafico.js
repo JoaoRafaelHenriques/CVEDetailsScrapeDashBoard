@@ -2,7 +2,8 @@ function atualizaGrafico(event){
     event.preventDefault();
     let valores = document.querySelector(".barraTexto").value;
     let cwes = valores.trim().split(" ");
-    cwes = cwes.filter(cwe => cwe !== "" && cwe !== " ");
+    // Removemos duplicados e espaços em branco ou vazios
+    cwes = cwes.filter((cwe, index) => cwe !== "" && cwe !== " " && cwes.indexOf(cwe) === index);
     if (cwes.length > 5) cwes = cwes.slice(0,5);
     grafico(cwes); 
 } 
