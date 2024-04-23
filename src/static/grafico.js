@@ -1,3 +1,11 @@
+let graficoChart = null;
+
+// Acontece sempre que a página carrega
+window.addEventListener("load",function() {
+    grafico()
+},false);
+
+// Atualizamos o gráfico quando há uma pesquisa filtrada
 function atualizaGrafico(event){
     event.preventDefault();
     let valores = document.querySelector(".barraTexto").value;
@@ -15,13 +23,6 @@ function getUrlParam(){
     let urlParams = new URLSearchParams(queryString);
     return urlParams.get("Projeto");
 }
-
-// Acontece sempre que a página carrega
-window.addEventListener("load",function() {
-    grafico()
-},false);
-
-let graficoChart = null;
 
 function grafico(cwes){
 

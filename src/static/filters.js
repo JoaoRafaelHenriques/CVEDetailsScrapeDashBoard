@@ -132,7 +132,13 @@ function pesquisaFiltrada(){
 
     let cwe_number = document.querySelector('.barraTexto');
     if (cwe_number) {
-        search_params.set("CWE", cwe_number.value);
+
+        // Tratamento da string
+        let cwes = cwe_number.value.trim().split(" ");
+        // Removemos duplicados e espaços em branco ou vazios
+        cwes = cwes.filter((cwe, index) => cwe !== "" && cwe !== " " && cwes.indexOf(cwe) === index);
+
+        search_params.set("CWE", cwes);
     }
 
     url_atualiza(url, search_params);

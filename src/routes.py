@@ -145,9 +145,11 @@ def overview_cwes():
         categoria = tuple(["", ""])
     else:
         categoria = tuple(categoria)
-    cwe = request.args.get("CWE")
-    if cwe is None:
-        cwe = ''
+    cwe_filter = request.args.get("CWE")
+    if cwe_filter is None:
+        cwe_filter = [""]
+    else:
+        cwe_filter = cwe_filter.split(",")
     offset = request.args.get("Page")
     size = 15
     if offset is None:
@@ -156,7 +158,9 @@ def overview_cwes():
         offset = (int(offset) - 1) * size
         
     # Procuramos a informação
-    cwes = consulta_base_de_dados(f"""SELECT CWE_INFO.V_CWE, CWE_INFO.DESCRIPTION, VULNERABILITY_CATEGORY.NAME , COALESCE(counter.count, 0) as "contagem"
+    cwes: list = []
+    for cwe in cwe_filter:
+        cwes += consulta_base_de_dados(f"""SELECT CWE_INFO.V_CWE, CWE_INFO.DESCRIPTION, VULNERABILITY_CATEGORY.NAME , COALESCE(counter.count, 0) as "contagem"
                                      FROM CWE_INFO 
                                      LEFT JOIN VULNERABILITY_CATEGORY 
                                      ON VULNERABILITY_CATEGORY.ID_CATEGORY = CWE_INFO.ID_CATEGORY 
