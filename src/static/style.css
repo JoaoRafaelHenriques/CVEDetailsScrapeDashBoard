@@ -267,20 +267,20 @@ h1 {
 }
 
 .menuFilter::-webkit-scrollbar {
-    width: 12px; /* largura da barra de rolagem */
+    width: 12px; /* largura da barra */
 }
 
 .menuFilter::-webkit-scrollbar-track {
-    background: #f1f1f100; /* cor de fundo da track */
+    background: #f1f1f100; /* vor de fundo da barra toda */
 }
 
 .menuFilter::-webkit-scrollbar-thumb {
-    background: #00adb5; /* cor do thumb (barra) */
-    border-radius: 6px; /* arredondamento do thumb */
+    background: #00adb5; /* cor da barra que mexe */
+    border-radius: 6px; 
 }
 
 .menuFilter::-webkit-scrollbar-thumb:hover {
-    background: #555; /* cor do thumb ao passar o mouse */
+    background: #555; /* hover na barra */
 }
 
 .active {
@@ -327,4 +327,21 @@ h1 {
     text-decoration: none;
     font-weight: bold;
 
+}
+
+.resumeBotao {
+    height: 4em;
+}
+
+.popUpInfo {
+    display: none; 
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.377);
+    border: 1px solid black;
+    color: red;
+    border-radius: 1rem;
+    padding: 10px;
+    z-index: 1;
+    width: auto;
+    height: auto;
 }

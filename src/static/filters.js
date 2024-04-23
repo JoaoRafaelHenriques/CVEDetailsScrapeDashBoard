@@ -28,22 +28,48 @@ window.onload = function() {
             if (option.classList.contains("active")){
                 lista_filtros.push(option.innerText);
             }
+
+            // Listener para todas as opções
             option.addEventListener('click', () => {
+
+                // Sempre que se seleciona uma opção o menu fecha
                 select.classList.remove('selected-clicked');
                 caret.classList.remove('caret-rotate');
                 menuFilter.classList.remove('menuFilter-open');
 
-                // Se já tiver ativo removemos, caso contrário adicionamos
+                // Se a opção já tiver ativa removemos, caso contrário adicionamos
                 if (option.classList.contains('active')) {
                     option.classList.remove('active');
                     lista_filtros.splice(lista_filtros.indexOf(option.innerText), 1);
                 } else {
+
+                    // Ao adicionar verificamos se é "ALL", caso seja, removemos todas as outras
+                    if (option.innerText.trim() === "All"){
+                        lista_filtros.splice(0, lista_filtros.length);
+                        options.forEach(option => {
+                            if (option.innerText.trim() !== "All") option.classList.remove('active');
+                        })
+                    } else {
+
+                        // Se não for "All" temos a certeza que removemos o "All" da lista
+                        options.forEach(option => {
+                            if (option.innerText.trim() === "All") {
+                                option.classList.remove('active');
+                                if (lista_filtros.includes(option.innerText)){
+                                    lista_filtros.splice(lista_filtros.indexOf(option.innerText), 1);
+                                }
+                                return;
+                            }
+                        });
+                    }
+                    
+                    // Adionamos a opção à lista
                     option.classList.add('active');
                     lista_filtros.push(option.innerText);
                 }
-                console.log(lista_filtros);
+
                 if (lista_filtros.length > 1){
-                    selected.innerText = "Multiple";
+                    selected.innerText = "Multiple (" + lista_filtros.length + ")";
                 } else if (lista_filtros.length < 1) {
                     selected.innerText = "No filter, please select at least one..."
                 } else {
