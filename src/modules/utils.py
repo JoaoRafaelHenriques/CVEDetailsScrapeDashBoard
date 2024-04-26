@@ -68,7 +68,7 @@ def calculo_diffs_diarios() -> dict:
     """Observa os valores de CVE para o último dia que foram coletadas.
 
     Returns:
-        dict: dicionario com informação (atualizadas, desaparecidas, iguais, novas)
+        dict: dicionario com informação {Projeto: [atualizadas, desaparecidas, iguais, novas]}
         data: data do dia em que foi feito o cálculo
     """
     
@@ -76,24 +76,32 @@ def calculo_diffs_diarios() -> dict:
     data_hoje = date.today()
     
     info = dict()
+    data_validada: bool = False
     
     # Iteramos por todos os projetos
     for projeto in INFO_SERVER.projetos:
         
-        # Testamos se já existe informação de hoje
-        caminho = os.path.join(INFO_SERVER.diff_output, f"{projeto}_{data_hoje}")
-        while not os.path.exists(caminho):
-            data_hoje = data_hoje - timedelta(days = 1)
-            caminho = os.path.join(INFO_SERVER.diff_output, f"{projeto}_{data_hoje}")
+        # Vamos buscar o id do projeto
+        r_id: int = INFO_BASE_DE_DADOS.obter_id_projeto(projeto)
         
-        # Dicionario com a informação (atualizadas, desaparecidas, iguais, novas)
-        info[projeto.title().replace("_", " ")] = []
-        for tipo in sorted(os.listdir(caminho)):
-            
-            # Queremos ignorar qualquer coisa que não seja os diffs
-            if projeto in tipo:
-                caminho_tipo = os.path.join(caminho, tipo)
-                info[projeto.title().replace("_", " ")].append(leitura_ficheiro(caminho_tipo))
+        # Caso não haja nada na tabela dizemos que todas as vulnerabilidades permancem iguais
+        resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT COUNT(*) FROM DAILY WHERE R_ID = {r_id};")
+        if resultado[0][0] == 0:
+            resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES WHERE R_ID = {r_id};")
+            info[projeto] = [0, 0, resultado[0][0], 0]
+            continue
+
+        # Testamos se já existe informação de hoje
+        while not data_validada:
+            resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT COUNT(*) FROM DAILY WHERE R_ID = {r_id} AND DATE = '{data_hoje}';")
+            if resultado[0][0] == 0:
+                data_hoje = data_hoje - timedelta(days = 1)
+            else:
+                data_validada = True            
+        
+        # Quando temos data e o projeto existe com coisas na tabela inserimos os dados
+        resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT UPDATED, MISSING, EQUAL, NEW FROM DAILY WHERE R_ID = {r_id} AND DATE = '{data_hoje}';")
+        info[projeto] = [resultado[0][0], resultado[0][1], resultado[0][2], resultado[0][3]]
     
     return info, data_hoje
 

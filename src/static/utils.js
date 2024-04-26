@@ -5,8 +5,14 @@ function isElementOverflowing(element) {
     return isOverflowingHorizontally || isOverflowingVertically;
 }
 
-function popUp(element, value) {
+function popUp(element) {
+    let value = element.innerText;
+
     // Se o texto não passa a DIV não é preciso PopUp
+    if (!element || !value){
+        return;
+    } 
+
     if (!isElementOverflowing(element)) {
         console.log('O texto não é maior que o elemento.');
     } else {
@@ -25,6 +31,13 @@ function popUp(element, value) {
     }
 }
 
+function hidePopUp() {
+    // Escondemos o PopUp
+    let popUpDiv = document.getElementById('popUp');
+    popUpDiv.style.display = 'none';
+}
+
+
 function popUpResume(element) {    
     // Vamos buscar a DIV do PopUp e preenchemos
     let popUpDiv = document.getElementById('popUpInfo');
@@ -37,10 +50,4 @@ function popUpResume(element) {
     // A posição será logo a seguir à coluna mas encima da mesma
     popUpDiv.style.left = (colunaTD.right) + 'px';
     popUpDiv.style.top = (colunaTD.top - popUpRect.height) + 'px';
-}
-
-function hidePopUp() {
-    // Escondemos o PopUp
-    let popUpDiv = document.getElementById('popUpInfo');
-    popUpDiv.style.display = 'none';
 }

@@ -3,19 +3,19 @@
     "diff_output": "/media/sda1/Projeto_Vulnerabilidades/VulnerabilidadesWork/output/diff_between_files",
 
     "projetos": [
-        "mozilla", 
-        "apache", 
-        "apache_cassandra", 
-        "elastic", 
-        "glibc", 
-        "kernel", 
-        "mongodb", 
-        "mysql", 
-        "neo4j",
-        "postgresql", 
-        "redis", 
-        "sqlite", 
-        "xen"
+        "Mozilla", 
+        "Apache", 
+        "Apache Cassandra", 
+        "Elastic Search", 
+        "Glibc", 
+        "KErnel Linux", 
+        "MongoDB", 
+        "MySQL", 
+        "Neo4J",
+        "Postgres", 
+        "Redis", 
+        "SQLite", 
+        "Xen"
     ],
 
     "base_de_dados": {
