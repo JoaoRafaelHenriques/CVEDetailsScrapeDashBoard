@@ -5,8 +5,6 @@ FILE = "modules/configs/configs.json"
 
 class Server:
     
-    output: str
-    diff_output: str
     projetos: list
         
     def __init__(self) -> None:
@@ -21,7 +19,7 @@ class Server:
         Returns:
             str: descrição do objeto.
         """
-        return "Output: " + self.output + "\nDiff output: " + self.diff_output + "\nProjetos: " + str(self.projetos)
+        return "Projetos: " + str(self.projetos)
 
     def leitura_configs(self, caminho: str) -> dict:
         """Lê o ficheiro de configurações e retorna o dicionário do mesmo.

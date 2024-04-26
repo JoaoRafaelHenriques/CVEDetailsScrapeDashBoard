@@ -1,7 +1,4 @@
 {
-    "output": "/media/sda1/Projeto_Vulnerabilidades/VulnerabilidadesWork/output",
-    "diff_output": "/media/sda1/Projeto_Vulnerabilidades/VulnerabilidadesWork/output/diff_between_files",
-
     "projetos": [
         "Mozilla", 
         "Apache", 
