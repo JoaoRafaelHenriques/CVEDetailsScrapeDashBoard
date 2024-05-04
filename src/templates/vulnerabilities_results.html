@@ -27,7 +27,7 @@
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto" href="/overview_vulnerabilities/?Projeto=+All+&Categoria=+All+&Missing=+Valid+&Page=1">
+                    <a class = "texto texto-selected" onClick="selected_menu(this)" href="/overview_vulnerabilities/?Projeto=+All+&Categoria=+All+&Missing=+Valid+&Page=1">
                         Vulnerabilities
                     </a>
                 </li>
@@ -79,11 +79,12 @@
             <div id="Missing" class="dropdown">
                 <span class="texto textoFiltro"> Missing: </span>
                 <div class="select">
-                    <span class="selected"> Valid </span>
+                    <span class="selected"> All </span>
                     <div class="caret"></div>
                 </div>
                 <ul class="menuFilter">
-                    <li class="active"> Valid </li>
+                    <li class="active"> All </li>
+                    <li > Valid </li>
                     {% for linha in resultados["FiltrosMissing"] %}
                     <li> {{ linha }} </li>
                     {% endfor %}

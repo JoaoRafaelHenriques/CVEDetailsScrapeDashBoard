@@ -40,11 +40,22 @@ def overview_vulnerabilities():
         where_clause = " OR " + " OR ".join([f"V_CLASSIFICATION LIKE '%{word}%'" for word in categoria])
         
     missing = request.args.get("Missing").strip(" ").split(" & ")
-    missing.append(" ")
-    if not missing or "Valid" in missing or "" in missing:
-        missing = tuple(["", ""])
+    if not missing or "All" in missing or "" in missing:
+        where_condicao: str = ""
     else:
-        missing = tuple(missing)
+        where_condicao: str = "AND"
+        print(missing)
+        if "Valid" in missing and len(missing) == 1:
+            where_condicao += " MISSING IS NULL"
+        elif "Valid" in missing:
+            where_condicao += " MISSING IS NULL"
+            missing = tuple(missing)
+            where_condicao += f""" OR (MISSING IN {missing} OR "{missing}" = "('', '')") """
+        else:
+            missing.append(" ")
+            missing = tuple(missing)
+            where_condicao += f""" (MISSING IN {missing} OR "{missing}" = "('', '')") """
+            
     offset = request.args.get("Page")
     size = 15
     if offset is None:
@@ -57,7 +68,7 @@ def overview_vulnerabilities():
                                         LEFT JOIN REPOSITORIES_SAMPLE ON VULNERABILITIES.R_ID = REPOSITORIES_SAMPLE.R_ID
                                         WHERE (PROJECT IN {projeto} OR "{projeto}" = "('', '')")
                                         AND ("{categoria}" = "('', '')" {where_clause})
-                                        AND (MISSING IN {missing} OR "{missing}" = "('', '')");
+                                        {where_condicao};
                                         """)
 
     info = {"Resultados": [], "FiltrosProjetos": [], "FiltrosCategorias": [], "FiltrosMissing": [], "ValoresVulnerabilidade": [f"{offset + 1} to {offset + size}", len(resultados)]}

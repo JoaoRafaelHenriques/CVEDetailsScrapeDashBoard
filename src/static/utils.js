@@ -51,3 +51,14 @@ function popUpResume(element) {
     popUpDiv.style.left = (colunaTD.right) + 'px';
     popUpDiv.style.top = (colunaTD.top - popUpRect.height) + 'px';
 }
+
+function selected_menu(this){
+    const navbar = document.querySelector(".navbar");
+    const options = navbar.querySelectorAll(".texto");
+
+    options.forEach(option => {
+        option.classList.remove("texto-selected");
+    });
+
+    this.classList.toggle("texto-selected");
+}

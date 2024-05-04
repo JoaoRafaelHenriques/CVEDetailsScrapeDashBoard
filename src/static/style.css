@@ -49,6 +49,12 @@ body {
     text-decoration-color: #00adb5;
 }
 
+.texto-selected {
+    color: #00f2ff;
+    font-weight: bold;
+
+}
+
 .formPesquisa {
     display: flex;
     justify-content: center;
