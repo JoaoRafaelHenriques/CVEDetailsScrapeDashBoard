@@ -294,7 +294,7 @@ h1 {
 }
 
 .botaoFiltro {
-    margin: 2em 3em 2.8em 3em;
+    margin: 2em 2em 2em 2em;
     padding: 0;
     border-radius: 0.5em;
     min-width: 8rem;
@@ -302,6 +302,7 @@ h1 {
     background: #323041;
     border: 2px #2a2f3b solid;
     color: #00adb5;
+    max-height: 5em;
 }
 
 .botaoFiltro:hover {

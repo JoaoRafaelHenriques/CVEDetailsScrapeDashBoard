@@ -91,10 +91,8 @@
         <div class="ChartTitle">
             <h1> Most Common CWEs </h1>
 
-            <!-- <span id="popUpInfo">Display 5 numbers with spaces between...</span> ~---->
             <form class = "formPesquisa" href="overview_cwes/" method="GET">
                 <div class = "barraPesquisa">
-                    <!--onCLick="popUpResume(this)" onmouseout="hidePopUp()"> ---->
                     <input name="CWE" class = "barraTexto" placeholder = "Search for a CWE number..."> 
                 </div>
                 <input class = "botaoFiltro resumeBotao" type = "submit" onCLick="atualizaGrafico(event)" value = "Filtrar">
@@ -103,6 +101,7 @@
             <div class="myChartDiv">
                 <canvas id="myChart"></canvas>
             </div>
+            <button class="botaoFiltro resumeBotao" onCLick="download()"> Download </button>
         </div>
         
     </body>

@@ -340,7 +340,9 @@ def grafico():
             dic["Titulos"].append([f'CWE-{str(cwe)}'])
         
     # Fazer a contagem para cada ano
+    var_help = []
     for cwe in dic["Titulos"]:
+        print(cwe)
         info = consulta_base_de_dados(f"""SELECT CVE, V_CWE 
                                       FROM VULNERABILITIES 
                                       INNER JOIN VULNERABILITIES_CWE ON VULNERABILITIES_CWE.V_ID = VULNERABILITIES.V_ID 
@@ -353,11 +355,20 @@ def grafico():
         }
         
         # Para cada linha adicionamos uma ocorrência em cada ano
+        alterou: bool = False
         for linha in info:
             if linha[0] is None:
                 continue
             cve = linha[0][4:8]
             info_tratada[cve] += 1
+            alterou = True
         
-        dic["Data"].append(info_tratada)
+        if alterou:
+            dic["Data"].append(info_tratada)
+        else:
+            var_help.append(cwe)
+
+    for cwe in var_help:
+        dic["Titulos"].remove(cwe)
+    
     return jsonify(dic)
