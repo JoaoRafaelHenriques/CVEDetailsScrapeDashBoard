@@ -1,11 +1,11 @@
 {
     "projetos": [
-        "Mozilla", 
         "Apache", 
+        "Mozilla", 
         "Apache Cassandra", 
         "Elastic Search", 
         "Glibc", 
-        "KErnel Linux", 
+        "Kernel Linux", 
         "MongoDB", 
         "MySQL", 
         "Neo4J",

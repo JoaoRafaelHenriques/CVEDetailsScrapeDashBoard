@@ -84,24 +84,22 @@ def calculo_diffs_diarios() -> dict:
         # Vamos buscar o id do projeto
         r_id: int = INFO_BASE_DE_DADOS.obter_id_projeto(projeto)
         
-        # Caso não haja nada na tabela dizemos que todas as vulnerabilidades permancem iguais
-        resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT COUNT(*) FROM DAILY WHERE R_ID = {r_id};")
-        if resultado[0][0] == 0:
-            resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES WHERE R_ID = {r_id};")
-            info[projeto] = [0, 0, resultado[0][0], 0]
-            continue
-
         # Testamos se já existe informação de hoje
         while not data_validada:
-            resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT COUNT(*) FROM DAILY WHERE R_ID = {r_id} AND DATE = '{data_hoje}';")
-            if resultado[0][0] == 0:
+            resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT COUNT(*) FROM DAILY WHERE DATE = '{data_hoje}';")
+            if resultado[0][0] < 13:
                 data_hoje = data_hoje - timedelta(days = 1)
             else:
-                data_validada = True            
-        
+                data_validada = True    
+                        
         # Quando temos data e o projeto existe com coisas na tabela inserimos os dados
         resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT UPDATED, MISSING, EQUAL, NEW FROM DAILY WHERE R_ID = {r_id} AND DATE = '{data_hoje}';")
-        info[projeto] = [resultado[0][0], resultado[0][1], resultado[0][2], resultado[0][3]]
+        
+        if len(resultado) > 0:
+            info[projeto] = [resultado[0][0], resultado[0][1], resultado[0][2], resultado[0][3]]
+        else:
+            resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT UPDATED, MISSING, EQUAL, NEW FROM DAILY WHERE R_ID = {r_id} AND DATE = '{data_hoje - timedelta(days = 1)}';")
+            info[projeto] = [resultado[0][0], resultado[0][1], resultado[0][2], resultado[0][3]]
     
     return info, data_hoje
 
@@ -116,6 +114,17 @@ def obter_id_projeto(projeto: str) -> int:
     """
     return INFO_BASE_DE_DADOS.obter_id_projeto(projeto)
 
+def obter_projeto_com_id(r_id: int) -> str:
+    """ Recebe um id e retorna o nome do projeto.
+    
+    Args:
+        r_id (int): id do projeto
+    
+    Returns:
+        str: nome do projeto
+    """
+    return INFO_BASE_DE_DADOS.obter_projeto_com_id(r_id)
+
 def consulta_base_de_dados(pesquisa: str) -> list:
     """Faz uma pesquisa na base de dados e retorna a lista de resultados.
 
@@ -126,6 +135,22 @@ def consulta_base_de_dados(pesquisa: str) -> list:
         list: lista de linhas e colunas pedidas
     """
     return INFO_BASE_DE_DADOS.consulta(pesquisa)
+
+def find_functions(p_id: int) -> dict:
+    """Procuramos as functions através de um p_id
+
+    Returns:
+        dic: data: lista de functions encontrados
+    """
+    dic: dict = {}
+    
+    resultados = consulta_base_de_dados(f'SELECT * FROM FUNCTIONS_DATA WHERE P_ID = "{p_id}";');
+    dic["data"] = []
+
+    for linha in resultados:
+        dic["data"].append(linha)
+    
+    return dic
 
 def inicializa(app: Flask):
     """Inicializa as variáveis INFO_SERVER, INFO_BASE_DE_DADOS para serem usadas nas restantes

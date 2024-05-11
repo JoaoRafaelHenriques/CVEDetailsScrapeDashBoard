@@ -52,13 +52,40 @@ function popUpResume(element) {
     popUpDiv.style.top = (colunaTD.top - popUpRect.height) + 'px';
 }
 
-function selected_menu(this){
-    const navbar = document.querySelector(".navbar");
-    const options = navbar.querySelectorAll(".texto");
+function informationPatchPID(element){
+    // Recebemos um elemento com um pathe
+    const commit = element.innerText;
 
-    options.forEach(option => {
-        option.classList.remove("texto-selected");
+    // Vamos buscar o ID do patche na base de dados
+    const url_pid = '/find/p_id/?P_ID=' + commit;
+    const p_ids = fetch(url_pid)
+    .then(response => {
+        
+        // Verificamos se tudo está correto
+        if (!response.ok) {
+            throw new Error('Erro ao buscar os dados.');
+        }
+        // Convertemos a resposta para JSON
+        return response.json();
+    })
+    .then(data => {
+        // Retornamos os resultados
+        return data.data;
+    })
+    .catch(error => {
+        // Lidamos com possíveis erros
+        console.log(error);
     });
+    return p_ids;
+}
 
-    this.classList.toggle("texto-selected");
+async function informationPatch(element){
+    // Esperamos que a informação chegue e se não trouxer nada, não retorna nada
+    const functions = await informationPatchPID(element);
+    if (functions.length === 0) {
+        return;
+    }
+    // Vamos para a página que apresenta os resultados
+    const json_array = JSON.stringify(functions);
+    window.location.href = "/overview_patches/patch?info=" + encodeURIComponent(json_array) + "&commit=" + element.innerText;
 }

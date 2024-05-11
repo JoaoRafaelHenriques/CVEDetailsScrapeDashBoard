@@ -49,42 +49,29 @@
             </ul>
         </nav>
 
-        <div class="filtros">
-            <div id="Projeto" class="dropdown">
-                <span class="texto textoFiltro"> Project: </span>
-                <div class="select">
-                    <span class="selected"> All </span>
-                    <div class="caret"></div>
-                </div>
-                <ul class="menuFilter">
-                    <li class="active"> All </li>
-                    {% for linha in resultados["FiltrosProjetos"] %}
-                    <li> {{ linha }} </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <input class = "botaoFiltro" type = "submit" onCLick="pesquisaFiltrada()" value = "Filtrar">
-        </div>
-
-        <div class = "allLine">
-            <span id="popUp"> </span> 
-        </div>
+        <h1> Overview of {{ resultados["Commit"] }} of {{ resultados["Projeto"] }}! </h1>
 
         <div class = "tabelaResultados">
             <table class = "tabela">
                 <thead class = "headers">
                     <tr>
-                        <th class = "head"> Project </th>
-                        <th class = "head"> Commit </th>
+                        <th class = "head"> P_ID </th>
+                        <th class = "head"> FilePath </th>
+                        <th class = "head"> BeginLine </th>
+                        <th class = "head"> EndLine </th>
+                        <th class = "head"> Occurrence </th>
+                        <th class = "head"> Affected </th>
                     </tr>
                 </thead>
                 {% for linha in resultados["Resultados"] %}
                 <tbody class = "lines">
                     <tr>
                         <td> {{linha[0]}} </td>
-                        <td class="popUpTD" onmouseover="popUp(this, '{{linha[1]}}')" onmouseout="hidePopUp()" onCLick="informationPatch(this, '{{linha[1]}}')">
-                            {{linha[1]}} 
-                        </td>
+                        <td> {{linha[4]}} </td>
+                        <td> {{linha[5]}} </td>
+                        <td> {{linha[6]}} </td>
+                        <td> {{linha[8]}} </td>
+                        <td> {{linha[9]}} </td>
                     </tr>
                 </tbody>
                 {% endfor %}
@@ -93,7 +80,7 @@
 
         <div class="numVulnerabilidades">
             <div class="localTexto">
-                <span class="texto vulnerabilidadesValores"> {{resultados["ValoresPatches"][0]}} of {{resultados["ValoresPatches"][1]}} </span>
+                <span class="texto vulnerabilidadesValores"> {{resultados["Tamanho"] }} of {{resultados["Tamanho"]}} </span>
             </div>
         </div>
 

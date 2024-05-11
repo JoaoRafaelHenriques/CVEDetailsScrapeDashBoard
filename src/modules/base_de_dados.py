@@ -85,6 +85,18 @@ class Base_de_Dados:
             r_id = self.consulta(f"""SELECT R_ID FROM REPOSITORIES_SAMPLE WHERE PROJECT = '{projeto}';""")[0][0]
             return r_id
         
+    def obter_projeto_com_id(self, r_id: str) -> str:
+        """ Recebe um id e retorna o nome do projeto.
+        
+        Args:
+            r_id (int): id do projeto
+        
+        Returns:
+            str: nome do projeto
+        """
+        if r_id:
+            return self.consulta(f"""SELECT PROJECT FROM REPOSITORIES_SAMPLE WHERE R_ID = {r_id};""")[0][0]
+        
         
         
         

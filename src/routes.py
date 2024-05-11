@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from modules.utils import calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade, obter_id_projeto
+from modules.utils import find_functions, calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade, obter_id_projeto, obter_projeto_com_id
 
 bp = Blueprint("pages", __name__)
 
@@ -44,7 +44,6 @@ def overview_vulnerabilities():
         where_condicao: str = ""
     else:
         where_condicao: str = "AND"
-        print(missing)
         if "Valid" in missing and len(missing) == 1:
             where_condicao += " MISSING IS NULL"
         elif "Valid" in missing:
@@ -92,6 +91,29 @@ def overview_vulnerabilities():
             if cat.title() not in info["FiltrosCategorias"]:
                 info["FiltrosCategorias"].append(cat.title())
     return render_template("vulnerabilities_results.html", resultados=info)
+
+@bp.route("/overview_patches/patch", methods =["GET"])
+def overview_patch_info():
+    
+    # Ler o que recebemos
+    info_json = request.args.get('info')
+    commit = request.args.get('commit')
+    info_array = jsonify(info_json).get_data() if info_json else []
+    info_array = info_array.decode('utf-8').strip(' " \ []').split('\"')
+    
+    dic: dict = {"Resultados": [], "Tamanho": 0, "Commit": commit, "Projeto": ""}
+    
+    for p_id in info_array:
+        p_id = p_id.strip("\\")
+        function = find_functions(p_id)
+        dic["Resultados"] += function["data"]
+        
+    dic["Tamanho"] = len(dic["Resultados"])
+    if dic["Tamanho"] > 0:
+        print(dic["Resultados"][0][1])
+        dic["Projeto"] = obter_projeto_com_id(dic["Resultados"][0][1])
+    
+    return render_template("patch_overview.html", resultados=dic)
 
 @bp.route("/overview_patches/", methods =["GET"])
 def overview_patches():
@@ -342,7 +364,6 @@ def grafico():
     # Fazer a contagem para cada ano
     var_help = []
     for cwe in dic["Titulos"]:
-        print(cwe)
         info = consulta_base_de_dados(f"""SELECT CVE, V_CWE 
                                       FROM VULNERABILITIES 
                                       INNER JOIN VULNERABILITIES_CWE ON VULNERABILITIES_CWE.V_ID = VULNERABILITIES.V_ID 
@@ -370,5 +391,22 @@ def grafico():
 
     for cwe in var_help:
         dic["Titulos"].remove(cwe)
+    
+    return jsonify(dic)
+
+@bp.route("/find/p_id/", methods=["GET"])
+def find_pId():
+    """Procuramos o P_ID de uma patch enviado como parâmetro
+
+    Returns:
+        dic: data: lista de p_ids encontrados
+    """
+    dic: dict = {}
+    commit = request.args.get("P_ID")
+    
+    resultados = consulta_base_de_dados(f'SELECT P_ID FROM PATCHES WHERE P_COMMIT = "{commit}";');
+    dic["data"] = []
+    for linha in resultados:
+        dic["data"].append(linha[0])
     
     return jsonify(dic)
