@@ -1,6 +1,5 @@
 .tabelaResultados {
-    width: 80rem;
-    margin: auto;
+    margin: 0 1em 0 1em;
     background-color: #232930;
     opacity : 0.5;
 }
@@ -43,7 +42,7 @@
 }
 
 .headers {
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 .head {

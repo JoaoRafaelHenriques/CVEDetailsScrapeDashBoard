@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from modules.utils import find_functions, calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade, obter_id_projeto, obter_projeto_com_id
+from modules.utils import find_num_linhas_alterado_ficheiro_repositorio, find_functions, calculo_diffs_diarios, consulta_base_de_dados, trata_categorias, trata_missing, trata_info_vulnerabidade, obter_id_projeto, obter_projeto_com_id
 
 bp = Blueprint("pages", __name__)
 
@@ -94,7 +94,13 @@ def overview_vulnerabilities():
 
 @bp.route("/overview_patches/patch", methods =["GET"])
 def overview_patch_info():
+    """Recebemos um patch e vamos buscar a informação sobre ele.
     
+    Args:
+            Dentro do request.args temos:
+                info (str): array com p_ids mas binários
+                commit (str): commit a pesquisar
+    """
     # Ler o que recebemos
     info_json = request.args.get('info')
     commit = request.args.get('commit')
@@ -107,10 +113,14 @@ def overview_patch_info():
         p_id = p_id.strip("\\")
         function = find_functions(p_id)
         dic["Resultados"] += function["data"]
+
+    for file in dic["Resultados"]:
+        changes = find_num_linhas_alterado_ficheiro_repositorio(obter_projeto_com_id(file[1]), commit, file[4])
+        file.append(changes["adicionadas"])
+        file.append( changes["removidas"])
         
     dic["Tamanho"] = len(dic["Resultados"])
     if dic["Tamanho"] > 0:
-        print(dic["Resultados"][0][1])
         dic["Projeto"] = obter_projeto_com_id(dic["Resultados"][0][1])
     
     return render_template("patch_overview.html", resultados=dic)

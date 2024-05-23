@@ -1,18 +1,19 @@
 {
     "projetos": [
-        "Apache", 
-        "Mozilla", 
-        "Apache Cassandra", 
-        "Elastic Search", 
-        "Glibc", 
-        "Kernel Linux", 
-        "MongoDB", 
-        "MySQL", 
-        "Neo4J",
-        "Postgres", 
-        "Redis", 
-        "SQLite", 
-        "Xen"
+        {"Nome": "Apache", "Dono": "httpd", "Repositorio": "httpd"}, 
+        {"Nome": "Mozilla", "Dono": "mozilla", "Repositorio": "gecko-dev"}, 
+        {"Nome": "Apache Cassandra", "Dono": "httpd", "Repositorio": "cassandra"}, 
+        {"Nome": "Elastic Search", "Dono": "elastic", "Repositorio": "elasticseacrh"}, 
+        {"Nome": "Glibc", "Dono": "bminor", "Repositorio": "glibc"}, 
+        {"Nome": "Kernel Linux", "Dono": "torvalds", "Repositorio": "linux"}, 
+        {"Nome": "MongoDB", "Dono": "mongodb", "Repositorio": "mongo"}, 
+        {"Nome": "MySQL", "Dono": "mysql", "Repositorio": "mysql-server"}, 
+        {"Nome": "Neo4J", "Dono": "neo4j", "Repositorio": "neo4j"},
+        {"Nome": "Postgres", "Dono": "postgres", "Repositorio": "postgres"}, 
+        {"Nome": "Redis", "Dono": "redis", "Repositorio": "redis"}, 
+        {"Nome": "SQLite", "Dono": "sqlite", "Repositorio": "sqlite"}, 
+        {"Nome": "Xen", "Dono": "xenbits", "Repositorio": "xen"},
+        {"Nome": "Django", "Dono": "django", "Repositorio": "django"}
     ],
 
     "base_de_dados": {

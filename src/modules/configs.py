@@ -8,7 +8,6 @@ class Server:
     projetos: list
         
     def __init__(self) -> None:
-        print(os.path.abspath(FILE))
         configs = self.leitura_configs(FILE)
         for key, value in configs.items():
             setattr(self, key, value)

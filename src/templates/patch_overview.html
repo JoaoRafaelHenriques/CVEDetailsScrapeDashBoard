@@ -61,6 +61,8 @@
                         <th class = "head"> EndLine </th>
                         <th class = "head"> Occurrence </th>
                         <th class = "head"> Affected </th>
+                        <th class = "head"> Lines + </th>
+                        <th class = "head"> Lines - </th>
                     </tr>
                 </thead>
                 {% for linha in resultados["Resultados"] %}
@@ -72,6 +74,8 @@
                         <td> {{linha[6]}} </td>
                         <td> {{linha[8]}} </td>
                         <td> {{linha[9]}} </td>
+                        <td> {{linha[10]}} </td>
+                        <td> {{linha[11]}} </td>
                     </tr>
                 </tbody>
                 {% endfor %}
