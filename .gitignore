@@ -3,6 +3,7 @@ log/
 output/
 
 src/app.py
+src/modules/configs/configs.py
 
 __pycache__/
 
