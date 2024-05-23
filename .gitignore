@@ -2,6 +2,8 @@ venv/
 log/
 output/
 
+src/app.py
+
 __pycache__/
 
 # Because this file is personal for each computer
