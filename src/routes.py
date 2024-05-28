@@ -115,9 +115,13 @@ def overview_patch_info():
         dic["Resultados"] += function["data"]
 
     for file in dic["Resultados"]:
-        changes = find_num_linhas_alterado_ficheiro_repositorio(obter_projeto_com_id(file[1]), commit, file[4])
-        file.append(changes["adicionadas"])
-        file.append( changes["removidas"])
+        try:
+            changes = find_num_linhas_alterado_ficheiro_repositorio(obter_projeto_com_id(file[1]), commit, file[4])
+            file.append(changes["adicionadas"])
+            file.append(changes["removidas"])
+        except Exception as e:
+            file.append(None)
+            file.append(None)
         
     dic["Tamanho"] = len(dic["Resultados"])
     if dic["Tamanho"] > 0:
