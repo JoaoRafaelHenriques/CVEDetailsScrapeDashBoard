@@ -21,7 +21,7 @@ if __name__ == '__main__':
         port = int(sys.argv[1])
 
     app = create_app()
-    app.run(port=port)
+    app.run(host='0.0.0.0', port=port)
     
     
 # python3 app.py PORTA

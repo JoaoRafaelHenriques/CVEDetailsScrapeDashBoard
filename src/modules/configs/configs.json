@@ -19,7 +19,7 @@
     "base_de_dados": {
         "host": "127.0.0.1",
         "user": "root",
-        "password": "kubernetes",
+        "password": "vulnD3tectionDb",
         "base_de_dados": "sw_vulnerability_db"
     }
 }
