@@ -99,11 +99,27 @@ function grafico(cwes){
     });
 } 
 
-function download(){
-    // Fazemos o download da imagem com o nome especificado
-    const imageLink = document.createElement("a");
-    const grafico = document.getElementById("myChart")
+function download() {
+    const originalCanvas = document.getElementById('myChart');
+    const width = originalCanvas.width;
+    const height = originalCanvas.height;
+
+    // Criar um canvas temporário com as mesmas dimensões
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = width;
+    tempCanvas.height = height;
+    const tempCtx = tempCanvas.getContext('2d');
+
+    // Desenhar o fundo branco
+    tempCtx.fillStyle = 'white';
+    tempCtx.fillRect(0, 0, width, height);
+
+    // Desenhar o conteúdo do gráfico original no canvas temporário
+    tempCtx.drawImage(originalCanvas, 0, 0);
+
+    // Criar o link para download
+    const imageLink = document.createElement('a');
     imageLink.download = 'chart.png';
-    imageLink.href = grafico.toDataURL('image/png', 1);
+    imageLink.href = tempCanvas.toDataURL('image/png', 1.0);
     imageLink.click();
 }
