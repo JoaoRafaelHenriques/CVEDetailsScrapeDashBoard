@@ -99,8 +99,8 @@ def calculo_diffs_diarios() -> dict:
         if len(resultado) > 0:
             info[projeto["Nome"]] = [resultado[0][0], resultado[0][1], resultado[0][2], resultado[0][3]]
         else:
-            resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT UPDATED, MISSING, EQUAL, NEW FROM DAILY WHERE R_ID = {r_id} AND DATE = '{data_hoje - timedelta(days = 1)}';")
-            info[projeto["Nome"]] = [resultado[0][0], resultado[0][1], resultado[0][2], resultado[0][3]]
+            resultado: list = INFO_BASE_DE_DADOS.consulta(f"SELECT COUNT(DISTINCT(CVE)) FROM VULNERABILITIES WHERE R_ID = {r_id} AND MISSING IS NULL;")
+            info[projeto["Nome"]] = [0, 0, resultado[0][0], 0]
     
     return info, data_hoje
 
@@ -144,12 +144,16 @@ def find_functions(p_id: int) -> dict:
         dic: data: lista de functions encontrados
     """
     dic: dict = {}
-    
-    resultados = consulta_base_de_dados(f'SELECT * FROM FUNCTIONS_DATA WHERE P_ID = "{p_id}";');
     dic["data"] = []
+    
+    # Se encontrarmos alguma coisa paramos porque não é necessário mais pesquisa
+    for i in range(1, 6):
+        resultados = consulta_base_de_dados(f'SELECT * FROM FUNCTIONS_{i} WHERE P_ID = "{p_id}";');
 
-    for linha in resultados:
-        dic["data"].append(linha)
+        for linha in resultados:
+            dic["data"].append(linha)
+        if len(dic["data"]) > 0:
+            break
     
     return dic
 
