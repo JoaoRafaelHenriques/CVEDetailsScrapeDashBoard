@@ -100,10 +100,12 @@ def overview_patch_info():
             Dentro do request.args temos:
                 info (str): array com p_ids mas binários
                 commit (str): commit a pesquisar
+                projeto (str): projeto a pesquisar
     """
     # Ler o que recebemos
     info_json = request.args.get('info')
     commit = request.args.get('commit')
+    projeto = request.args.get('projeto')
     info_array = jsonify(info_json).get_data() if info_json else []
     info_array = info_array.decode('utf-8').strip(' " \ []').split('\"')
     
@@ -111,7 +113,7 @@ def overview_patch_info():
     
     for p_id in info_array:
         p_id = p_id.strip("\\")
-        function = find_functions(p_id)
+        function = find_functions(p_id, projeto)
         dic["Resultados"] += function["data"]
 
     for file in dic["Resultados"]:
@@ -120,13 +122,13 @@ def overview_patch_info():
             file.append(changes["adicionadas"])
             file.append(changes["removidas"])
         except Exception as e:
-            file.append(None)
-            file.append(None)
+            file.append(0)
+            file.append(0)
         
     dic["Tamanho"] = len(dic["Resultados"])
     if dic["Tamanho"] > 0:
-        dic["Projeto"] = obter_projeto_com_id(dic["Resultados"][0][1])
-    
+        dic["Projeto"] = projeto
+
     return render_template("patch_overview.html", resultados=dic)
 
 @bp.route("/overview_patches/", methods =["GET"])

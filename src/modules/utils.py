@@ -137,7 +137,7 @@ def consulta_base_de_dados(pesquisa: str) -> list:
     """
     return INFO_BASE_DE_DADOS.consulta(pesquisa)
 
-def find_functions(p_id: int) -> dict:
+def find_functions(p_id: int, projeto: str) -> dict:
     """Procuramos as functions através de um p_id
 
     Returns:
@@ -147,8 +147,12 @@ def find_functions(p_id: int) -> dict:
     dic["data"] = []
     
     # Se encontrarmos alguma coisa paramos porque não é necessário mais pesquisa
-    for i in range(1, 6):
-        resultados = consulta_base_de_dados(f'SELECT * FROM FUNCTIONS_{i} WHERE P_ID = "{p_id}";');
+    for p in INFO_SERVER.projetos:
+        
+        if projeto != p["Nome"] or p["ID"] == 0:
+            continue
+        
+        resultados = consulta_base_de_dados(f'SELECT * FROM FUNCTIONS_{p["ID"]} WHERE P_ID = "{p_id}";');
 
         for linha in resultados:
             dic["data"].append(linha)
