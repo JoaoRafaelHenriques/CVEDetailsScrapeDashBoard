@@ -149,7 +149,7 @@ def find_functions(p_id: int, projeto: str) -> dict:
     # Se encontrarmos alguma coisa paramos porque não é necessário mais pesquisa
     for p in INFO_SERVER.projetos:
         
-        if projeto != p["Nome"]:
+        if projeto != p["Nome"] or p["ID"] == 0:
             continue
         
         resultados = consulta_base_de_dados(f'SELECT * FROM FUNCTIONS_{p["ID"]} WHERE P_ID = "{p_id}";');
