@@ -79,7 +79,7 @@ function informationPatchPID(element){
     return p_ids;
 }
 
-async function informationPatch(element){
+async function informationPatch(element, _, project){
     // Esperamos que a informação chegue e se não trouxer nada, não retorna nada
     const functions = await informationPatchPID(element);
     if (functions.length === 0) {
@@ -87,5 +87,5 @@ async function informationPatch(element){
     }
     // Vamos para a página que apresenta os resultados
     const json_array = JSON.stringify(functions);
-    window.location.href = "/overview_patches/patch?info=" + encodeURIComponent(json_array) + "&commit=" + element.innerText;
+    window.location.href = "/overview_patches/patch?info=" + encodeURIComponent(json_array) + "&commit=" + element.innerText + "&projeto=" + project;
 }
