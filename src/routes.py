@@ -126,8 +126,7 @@ def overview_patch_info():
             file.append(0)
         
     dic["Tamanho"] = len(dic["Resultados"])
-    if dic["Tamanho"] > 0:
-        dic["Projeto"] = projeto
+    dic["Projeto"] = projeto
 
     return render_template("patch_overview.html", resultados=dic)
 
