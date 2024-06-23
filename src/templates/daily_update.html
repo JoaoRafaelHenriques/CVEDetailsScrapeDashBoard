@@ -18,9 +18,14 @@
     </head>
     <body>
         <nav class = "navbar">
+            <div class="imagemHome">
+                <a href="/">
+                    <img src = "../static/SVG/homepage.svg"/>
+                </a>
+            </div>
             <ul class = "menu"> 
                 <li class = "botao">
-                    <a class = "texto texto-selected" href='/daily_update/'>
+                    <a class = "texto" href='/daily_update/'>
                         Daily Updates
                     </a>
                 </li>
@@ -45,6 +50,8 @@
                     </a>
                 </li>
             </ul>
+            <div class="imagemHome">
+            </div>
         </nav>
 
         <h1> Information from {{ resultados["Data"][0] }}! </h1>

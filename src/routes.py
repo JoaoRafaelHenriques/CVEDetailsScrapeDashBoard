@@ -67,7 +67,7 @@ def overview_vulnerabilities():
                                         LEFT JOIN REPOSITORIES_SAMPLE ON VULNERABILITIES.R_ID = REPOSITORIES_SAMPLE.R_ID
                                         WHERE (PROJECT IN {projeto} OR "{projeto}" = "('', '')")
                                         AND ("{categoria}" = "('', '')" {where_clause})
-                                        {where_condicao};
+                                        {where_condicao} ORDER BY CVE DESC;
                                         """)
 
     info = {"Resultados": [], "FiltrosProjetos": [], "FiltrosCategorias": [], "FiltrosMissing": [], "ValoresVulnerabilidade": [f"{offset + 1} to {offset + size}", len(resultados)]}

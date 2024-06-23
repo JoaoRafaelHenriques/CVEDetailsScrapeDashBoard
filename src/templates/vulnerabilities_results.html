@@ -20,6 +20,11 @@
     </head>
     <body>
         <nav class = "navbar">
+            <div class="imagemHome">
+                <a href="/">
+                    <img src = "../static/SVG/homepage.svg"/>
+                </a>
+            </div>
             <ul class = "menu"> 
                 <li class = "botao">
                     <a class = "texto" href='/daily_update/'>
@@ -27,7 +32,7 @@
                     </a>
                 </li>
                 <li class = "botao">
-                    <a class = "texto texto-selected" onClick="selected_menu(this)" href="/overview_vulnerabilities/?Projeto=+All+&Categoria=+All+&Missing=+Valid+&Page=1">
+                    <a class = "texto" href="/overview_vulnerabilities/?Projeto=+All+&Categoria=+All+&Missing=+Valid+&Page=1">
                         Vulnerabilities
                     </a>
                 </li>
@@ -47,6 +52,8 @@
                     </a>
                 </li>
             </ul>
+            <div class="imagemHome">
+            </div>
         </nav>
         
         <div class="filtros">

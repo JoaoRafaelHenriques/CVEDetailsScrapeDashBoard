@@ -1,4 +1,5 @@
 let graficoChart = null;
+const colors = ["#B07156", "#413C58", "#EDF060", "#33673B", "#00A6FB"]
 
 // Acontece sempre que a página carrega
 window.addEventListener("load",function() {
@@ -70,8 +71,8 @@ function grafico(cwes){
             label: titulo,
             data: Object.values(data.Data[index]),
             borderWidth: 1,
-            backgroundColor: `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 1)`,
-            borderColor: `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`
+            backgroundColor: colors[index],
+            borderColor: colors[index]
         }));
 
         // Contruímos o gráfico

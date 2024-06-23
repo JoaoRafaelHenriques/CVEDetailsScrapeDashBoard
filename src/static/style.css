@@ -16,22 +16,35 @@ body {
 
 .navbar {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     background-color: #232930;
     opacity : 0.5;
+    margin: 0;
 }
 
 /* list-style-type: none;  Esta linha retira as bolas atrás da palavra */
 .menu {
     list-style-type: none; 
-    margin: 0;
-    padding: 2rem;
+    padding: 1em;
+    justify-content: center;
 }
 
 .botao {
     display: inline-block;
 }
+
+.imagemHome {
+    width: 2em;
+    padding-left: 3em;
+    justify-content: center;
+    align-items: center;
+}
+
+.imagemHome img{
+    height: 2em;
+}
+
 
 /* text-decoration: none; Esta linha retira os sublinhados dos links */
 .texto {
